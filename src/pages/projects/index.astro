@@ -1,0 +1,145 @@
+---
+import type Project from "../../interfaces/project";
+import fetchApi from "../../lib/strapi";
+import MainLayout from "../../layouts/MainLayout.astro";
+import { Badge } from "../../components/ui/badge";
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+
+const projects = await fetchApi<Required<Project>[]>({
+  endpoint: "projects",
+  wrappedByKey: "data",
+  query: {
+    populate: {
+      header: true,
+      icons: true,
+    },
+    sort: "year:desc",
+  },
+});
+
+projects.forEach((project) => {
+  if (
+    project.header &&
+    project.header.url &&
+    !project.header.url.startsWith("http")
+  ) {
+    project.header.url = import.meta.env.STRAPI_URL + project.header.url;
+  }
+});
+
+// Helper: chunk projects into groups of 4
+function chunkProjects(arr: typeof projects, size = 4) {
+  const chunks = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size));
+  }
+  return chunks;
+}
+
+const projectChunks = chunkProjects(projects);
+---
+
+<MainLayout>
+  <div class="text-white px-4 md:px-10 max-w-screen-xl mx-auto p-20 pt-10">
+    <h1 class="text-6xl font-bold mb-10">Projects</h1>
+
+    {
+      projectChunks.map((chunk) => {
+        const [featured, ...rest] = chunk;
+        return (
+          <div class="mb-20">
+            <div class="items-center mb-20">
+              <div class="">
+                <a href={featured.url} target="_blank" class="block group">
+                  {featured.header.mime.startsWith("video") ? (
+                    <video
+                      src={featured.header?.url}
+                      class="rounded-2xl w-full h-[400px] object-cover mb-4 transition-transform group-hover:scale-[1.01]"
+                      autoplay
+                      loop
+                      muted
+                      playsinline
+                    />
+                  ) : (
+                    <Image
+                      width={1200}
+                      height={400}
+                      layout={
+                        featured.header.mime.includes("gif")
+                          ? "none"
+                          : "constrained"
+                      }
+                      src={featured.header.url}
+                      alt={featured.header.alternativeText || featured.name}
+                      class="rounded-2xl w-full h-[200px] md:w-[1200px] md:h-[400px] object-cover mb-4 transition-transform group-hover:scale-[1.01]"
+                    />
+                  )}
+                  <div class="flex items-start">
+                    <div class="flex flex-col">
+                      <h2 class="text-3xl font-semibold group-hover:underline">
+                        {featured.name}
+                      </h2>
+                      <div class="flex items-center mt-3">
+                        <Badge>{featured.year}</Badge>
+                      </div>
+                    </div>
+                    <div class="flex ml-auto mt-1">
+                      {featured.icons?.map((icon) => (
+                        <Icon
+                          name={icon.icon}
+                          class={`text-white text-2xl ml-2`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+              {rest.map((project) => (
+                <a
+                  href={project.url}
+                  target="_blank"
+                  class="block group rounded-2xl hover:scale-[1.01] transition"
+                >
+                  <Image
+                    width={400}
+                    height={200}
+                    layout={
+                      project.header.mime.includes("gif")
+                        ? "none"
+                        : "constrained"
+                    }
+                    src={project.header?.url}
+                    alt={project.header?.alternativeText || project.name}
+                    class="w-full h-48 object-cover rounded-xl mb-4"
+                  />
+                  <div class="flex items-start">
+                    <div class="flex flex-col">
+                      <h3 class="text-3xl font-medium group-hover:underline">
+                        {project.name}
+                      </h3>
+                      <div class="flex items-center mt-1">
+                        <Badge>{project.year}</Badge>
+                      </div>
+                    </div>
+                    <div class="flex ml-auto mt-1">
+                      {project.icons?.map((icon) => (
+                        <Icon
+                          name={icon.icon}
+                          class={`text-white text-2xl ml-2`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        );
+      })
+    }
+  </div>
+</MainLayout>

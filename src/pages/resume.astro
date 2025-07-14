@@ -1,0 +1,211 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+
+import { Image } from "astro:assets";
+import fetchApi from "../lib/strapi";
+
+import { Icon } from "astro-icon/components";
+import { formDataToObject } from "astro:actions";
+import Markdown from "../components/Markdown.astro";
+
+import dayjs from "dayjs";
+
+const resume = await fetchApi<Resume>({
+  endpoint: "resume",
+  wrappedByKey: "data",
+  query: {
+    populate: {
+      picture: true,
+      socials: true,
+      workplaces: {
+        populate: {
+          association: {
+            populate: "*",
+          },
+        },
+      },
+      institutions: {
+        populate: {
+          association: {
+            populate: "*",
+          },
+        },
+      },
+    },
+  },
+});
+---
+
+<MainLayout>
+  <div class="text-white px-4 md:px-10 py-12 min-h-screen">
+    <div class="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+      <!-- Sidebar -->
+      <aside class="md:sticky md:top-32 self-start">
+        <div class="rounded-2xl p-6 flex flex-col items-center text-center">
+          <img
+            src={import.meta.env.STRAPI_URL + resume.picture.url}
+            alt="Profile Photo"
+            class="w-32 h-32 rounded-full object-cover border-4 border-white mb-4"
+          />
+          <h1 class="text-2xl font-bold">{resume.name}</h1>
+          <p class="text-gray-400">{resume.title}</p>
+
+          <!-- Social Icons -->
+          <div class="flex space-x-1 mt-4">
+            {
+              resume.socials.map((social) => (
+                <a
+                  href={social.url}
+                  target="_blank"
+                  class="p-2 px-4 rounded-xl hover:bg-stone-700 transition"
+                >
+                  <Icon name={social.icon} class="h-5 w-5" />
+                </a>
+              ))
+            }
+          </div>
+          <div class="mt-8 space-y-3 w-full text-center text-sm">
+            <div>
+              <p class="text-gray-400 uppercase text-xs mb-1">Age</p>
+              <p class="font-semibold">{resume.age}</p>
+            </div>
+            <div>
+              <p class="text-gray-400 uppercase text-xs mb-1">Email</p>
+              <p class="font-semibold">{resume.email}</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <section class="md:col-span-2 space-y-10">
+        <!-- About Me -->
+        <div>
+          <h2 class="text-xl font-semibold border-b border-[#2e2e45] pb-2 mb-2">
+            About Me
+          </h2>
+          <p class="text-gray-300">
+            {resume.about}
+          </p>
+        </div>
+
+        <!-- Experience -->
+        <div>
+          <h2 class="text-xl font-semibold border-b border-[#2e2e45] pb-2 mb-4">
+            Work Experience
+          </h2>
+
+          <div class="space-y-6">
+            {
+              resume.workplaces.map((work) => (
+                <div>
+                  <h3 class="font-bold text-lg">{work.title}</h3>
+                  <div class="flex items-center mb-2">
+                    <div class="h-8 max-w-10">
+                      <Image
+                        src={
+                          import.meta.env.STRAPI_URL +
+                          work.association.logo.formats.xs.url
+                        }
+                        srcset={
+                          import.meta.env.STRAPI_URL +
+                          work.association.logo.formats.tiny.url +
+                          " 1x, " +
+                          import.meta.env.STRAPI_URL +
+                          work.association.logo.formats.xs.url +
+                          " 2x, " +
+                          import.meta.env.STRAPI_URL +
+                          work.association.logo.formats.small.url +
+                          " 3x"
+                        }
+                        alt={work.association.name}
+                        inferSize={true}
+                        layout="constrained"
+                        class="h-full object-contain"
+                      />
+                    </div>
+                    <p class="text-stone-500 text-sm">
+                      {work.association.name} —{" "}
+                      <span class="text-[#92C8F5]">
+                        {dayjs(work.start_date).format("YYYY")} -{" "}
+                        {work.end_date
+                          ? dayjs(work.end_date).format("YYYY")
+                          : "Present"}
+                      </span>
+                    </p>
+                  </div>
+                  <div class="text-stone-300 mt-1">
+                    {work.content && <Markdown content={work.content} />}
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+
+          <!-- Education -->
+          <div class="mt-10">
+            <h2
+              class="text-xl font-semibold border-b border-[#2e2e45] pb-2 mb-4"
+            >
+              Education
+            </h2>
+
+            <div class="space-y-6">
+              {
+                resume.institutions.map((institute) => (
+                  <div>
+                    <h3 class="font-bold text-lg max-w-140">
+                      {institute.title}
+                    </h3>
+                    <h4 class="text-base text-stone-300 max-w-140">
+                      {institute.subtitle}
+                    </h4>
+                    <div class="flex items-center mb-2">
+                      <div class="h-14 max-w-28 mr-2">
+                        <Image
+                          src={
+                            import.meta.env.STRAPI_URL +
+                            institute.association.logo.formats.xs.url
+                          }
+                          srcset={
+                            import.meta.env.STRAPI_URL +
+                            institute.association.logo.formats.tiny.url +
+                            " 1x, " +
+                            import.meta.env.STRAPI_URL +
+                            institute.association.logo.formats.xs.url +
+                            " 2x, " +
+                            import.meta.env.STRAPI_URL +
+                            institute.association.logo.formats.small.url +
+                            " 3x"
+                          }
+                          alt={institute.association.name}
+                          inferSize={true}
+                          layout="constrained"
+                          class="h-full object-contain"
+                        />
+                      </div>
+                      <p class="text-stone-500 text-sm">
+                        {institute.association.name} —{" "}
+                        <span class="text-[#92C8F5]">
+                          {dayjs(institute.end_date).format("YYYY") ===
+                          dayjs(institute.start_date).format("YYYY")
+                            ? dayjs(institute.start_date).format("YYYY")
+                            : `${dayjs(institute.start_date).format("YYYY")} - ${institute.end_date ? dayjs(institute.end_date).format("YYYY") : "Present"}`}
+                        </span>
+                      </p>
+                    </div>
+                    <div class="text-stone-300 mt-1">
+                      {institute.content && (
+                        <Markdown content={institute.content} />
+                      )}
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</MainLayout>

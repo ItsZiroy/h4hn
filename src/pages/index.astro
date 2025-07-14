@@ -1,0 +1,70 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import fetchApi from "../lib/strapi";
+import { Image, Picture } from "astro:assets";
+
+// these settings can be configured in code or designed in Paper
+
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+
+const summary = await fetchApi<CurrentJob>({
+  endpoint: "summary",
+  wrappedByKey: "data",
+  query: {
+    populate: {
+      picture: true,
+      associations: {
+        populate: {
+          logo: true,
+        },
+      },
+    },
+  },
+});
+---
+
+<MainLayout>
+  <div
+    class="mt-38 w-full flex flex-col justify-center items-center z-10 text-white"
+  >
+    <div class="flex flex-col items-center mb-30">
+      <Picture
+        width={200}
+        height={200}
+        formats={["avif", "webp"]}
+        src={import.meta.env.STRAPI_URL + summary.picture.url}
+        alt="Profile Image"
+        class="rounded-full border-4 border-white shadow-lg object-cover"
+      />
+      <div
+        class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-center mt-3"
+      >
+        {summary.name}
+      </div>
+      <div class="text-base md:text-lg text-stone-500 text-center">
+        {summary.title}
+      </div>
+      <div class="text-xl mt-4 flex flex-col items-center gap-2">
+        <div class="flex items-center gap-10 mt-2">
+          {
+            summary.associations.map((association) => (
+              <div
+                key={association.id}
+                class="h-6 max-w-32 md:h-8 md:max-w-40 flex items-center justify-center"
+              >
+                <Image
+                  inferSize={true}
+                  src={import.meta.env.STRAPI_URL + association.logo.url}
+                  alt={association.name}
+                  class="h-full w-auto object-contain"
+                  title={association.name}
+                />
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</MainLayout>

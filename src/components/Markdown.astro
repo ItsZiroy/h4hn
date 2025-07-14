@@ -1,0 +1,24 @@
+---
+import { micromark } from "micromark";
+
+const { content } = Astro.props;
+const file = micromark(content);
+---
+
+<div class="md" set:html={String(file)} />
+
+<style>
+  .md {
+    ol {
+      list-style-type: decimal;
+      margin-left: 1.5em;
+    }
+    ul {
+      list-style-type: disc;
+      margin-left: 1.5em;
+    }
+    li {
+      margin-bottom: 0.3em;
+    }
+  }
+</style>
