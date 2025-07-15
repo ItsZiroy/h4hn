@@ -5,6 +5,8 @@ import tailwindcss from "@tailwindcss/vite";
 
 import icon from "astro-icon";
 
+import playformCompress from "@playform/compress";
+
 export default defineConfig({
   trailingSlash: "never",
   prefetch: {
@@ -32,7 +34,7 @@ export default defineConfig({
       },
     ],
   },
-  integrations: [react(), icon()],
+  integrations: [react(), icon(), playformCompress()],
   vite: {
     plugins: [tailwindcss()],
   },
