@@ -1945,6 +1945,11 @@ ast-types@^0.16.1:
   dependencies:
     tslib "^2.0.1"
 
+astro-compressor@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/astro-compressor/-/astro-compressor-1.0.0.tgz#e56ff64c1a3d482e0ccaa7601d4e3e8c0d1ad7d4"
+  integrity sha512-MNGRmjIsb73BIJivbU/HnTbPu5CEFvXp1NCev0bpsuK/cp4cCPX6C1omUPXzw2oQbtKv0phTTTtEk+h20SrF1Q==
+
 astro-icon@^1.1.5:
   version "1.1.5"
   resolved "https://registry.npmjs.org/astro-icon/-/astro-icon-1.1.5.tgz#5d24a55caed5886514a6edde5ea7e623dfc22f59"

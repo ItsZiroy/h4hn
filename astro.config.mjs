@@ -7,6 +7,8 @@ import icon from "astro-icon";
 
 import playformCompress from "@playform/compress";
 
+import compressor from "astro-compressor";
+
 export default defineConfig({
   trailingSlash: "never",
   prefetch: {
@@ -34,7 +36,7 @@ export default defineConfig({
       },
     ],
   },
-  integrations: [react(), icon(), playformCompress()],
+  integrations: [react(), icon(), playformCompress(), compressor()],
   vite: {
     plugins: [tailwindcss()],
   },
