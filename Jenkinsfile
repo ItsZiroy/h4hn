@@ -1,6 +1,6 @@
 @Library("teckdigital") _
 def appName = "h4hn"
-def gitopsRepo = "https://github.com/ItsZiroy/gitops"
+def gitOpsRepo = "https://github.com/ItsZiroy/gitops"
 def localBranchToGitopsValuesPath = [
     'main': 'apps/h4hn/ui/values.yaml',
 ]
@@ -44,7 +44,7 @@ pipeline {
                 script {
                     def valuesPath = localBranchToGitopsValuesPath[getLocalBranchName()]
 
-                    updateGitops(appName: appName, valuesPath: valuesPath, gitopRepo: gitopsRepo, credentialsId: "itsziroy-github-user" , gitUserEmail: "yannik@h4hn.de")
+                    updateGitops(appName: appName, valuesPath: valuesPath, gitOpsRepo: gitOpsRepo, credentialsId: "itsziroy-github-user" , gitUserEmail: "yannik@h4hn.de")
                 }
             }
         }

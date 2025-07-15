@@ -13,5 +13,5 @@ RUN yarn build
 # Serve with busybox
 FROM busybox:1.37
 COPY --from=builder /app/dist /www
-CMD ["httpd", "-f", "-p", "3000", "-h", "/www"]
+CMD ["httpd", "-f", "-v", "-p", "3000", "-h", "/www"]
 EXPOSE 3000
