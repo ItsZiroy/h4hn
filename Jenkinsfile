@@ -27,7 +27,9 @@ pipeline {
                                 "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
                                 "STRAPI_URL=${cmsEndpoint}",
                                 "STRAPI_TOKEN=${STRAPI_TOKEN}"
-                            ])
+                            ],
+                            imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}"
+                            )
                         }
                     }
                 }
@@ -44,7 +46,12 @@ pipeline {
                 script {
                     def valuesPath = localBranchToGitopsValuesPath[getLocalBranchName()]
 
-                    updateGitops(appName: appName, valuesPath: valuesPath, gitOpsRepo: gitOpsRepo, credentialsId: "itsziroy-github-user" , gitUserEmail: "yannik@h4hn.de")
+                    updateGitops(imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}",
+                                appName: appName, 
+                                valuesPath: valuesPath, 
+                                gitOpsRepo: gitOpsRepo, 
+                                credentialsId: "itsziroy-github-user" , 
+                                gitUserEmail: "yannik@h4hn.de")
                 }
             }
         }
