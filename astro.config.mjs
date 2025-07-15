@@ -25,6 +25,11 @@ export default defineConfig({
         port: "1337",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "cms.h4hn.de",
+        pathname: "/**",
+      },
     ],
   },
   integrations: [react(), icon()],
