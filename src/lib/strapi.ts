@@ -33,7 +33,11 @@ export default async function fetchApi<T>({
     url += `?${queryString}`;
   }
 
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${import.meta.env.STRAPI_TOKEN}`,
+    },
+  });
   let data = await res.json();
 
   if (wrappedByKey) {

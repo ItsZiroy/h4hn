@@ -5,6 +5,8 @@ def localBranchToGitopsValuesPath = [
     'main': 'apps/h4hn/values.yaml',
 ]
 
+def cmsEndpoint = "https://cms.h4hn.de"
+
 pipeline {
    agent {
     kubernetes {
@@ -18,9 +20,14 @@ pipeline {
                 container('kaniko') {
                     script {
                         withCredentials([
-                            string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN')
+                            string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
+                            string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
                         ]) {
-                            buildDockerImage(buildArgs: ["GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}"])
+                            buildDockerImage(buildArgs: [
+                                "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
+                                "STRAPI_URL=${cmsEndpoint}",
+                                "STRAPI_TOKEN=${STRAPI_TOKEN}"
+                            ])
                         }
                     }
                 }
