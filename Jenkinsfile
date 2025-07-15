@@ -2,7 +2,7 @@
 def appName = "h4hn"
 def gitopsRepo = "https://github.com/ItsZiroy/gitops"
 def localBranchToGitopsValuesPath = [
-    'main': 'apps/h4hn/values.yaml',
+    'main': 'apps/h4hn/ui/values.yaml',
 ]
 
 def cmsEndpoint = "https://cms.h4hn.de"
