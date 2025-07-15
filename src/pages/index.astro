@@ -51,13 +51,15 @@ const summary = await fetchApi<CurrentJob>({
             summary.associations.map((association) => (
               <div
                 key={association.id}
-                class="h-6 max-w-32 md:h-8 md:max-w-40 flex items-center justify-center"
+                class="flex items-center justify-center"
               >
                 <Image
                   inferSize={true}
-                  src={import.meta.env.STRAPI_URL + association.logo.url}
+                  src={
+                    import.meta.env.STRAPI_URL + association.logo.formats.xs.url
+                  }
                   alt={association.name}
-                  class="h-full w-auto object-contain"
+                  class="h-6 max-w-32 md:h-8 md:max-w-40 w-auto object-contain"
                   title={association.name}
                 />
               </div>
