@@ -9,4 +9,5 @@ export default interface Project {
   programming_languages: string[];
   year: string;
   header?: File;
+  poster?: File;
 }
