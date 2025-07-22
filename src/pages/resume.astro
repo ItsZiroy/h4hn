@@ -110,7 +110,7 @@ const resume = await fetchApi<Resume>({
                 <div>
                   <h3 class="font-bold text-lg">{work.title}</h3>
                   <div class="flex items-center mb-2">
-                    <div class="h-8 max-w-10">
+                    <div class="h-14 max-w-28">
                       <Image
                         src={
                           import.meta.env.STRAPI_URL +
@@ -118,18 +118,19 @@ const resume = await fetchApi<Resume>({
                         }
                         srcset={
                           import.meta.env.STRAPI_URL +
+                          work.association.logo.formats.tiny.url +
+                          " 64w, " +
+                          import.meta.env.STRAPI_URL +
                           work.association.logo.formats.xs.url +
-                          " 1x, " +
+                          " 256w, " +
                           import.meta.env.STRAPI_URL +
                           work.association.logo.formats.small.url +
-                          " 2x, " +
-                          import.meta.env.STRAPI_URL +
-                          work.association.logo.formats.medium.url +
-                          " 3x"
+                          " 500w"
                         }
+                        sizes="(max-width: 768px) 64px, 112px"
                         alt={work.association.name}
-                        inferSize={true}
-                        layout="constrained"
+                        height={40}
+                        width={40}
                         class="h-full object-contain"
                       />
                     </div>
@@ -178,18 +179,18 @@ const resume = await fetchApi<Resume>({
                           }
                           srcset={
                             import.meta.env.STRAPI_URL +
+                            institute.association.logo.formats.tiny.url +
+                            " 64w, " +
+                            import.meta.env.STRAPI_URL +
                             institute.association.logo.formats.xs.url +
-                            " 1x, " +
+                            " 256w, " +
                             import.meta.env.STRAPI_URL +
                             institute.association.logo.formats.small.url +
-                            " 2x, " +
-                            import.meta.env.STRAPI_URL +
-                            institute.association.logo.formats.medium.url +
-                            " 3x"
+                            " 500w, "
                           }
                           alt={institute.association.name}
-                          inferSize={true}
-                          layout="constrained"
+                          height={56}
+                          width={112}
                           class="h-full object-contain"
                         />
                       </div>
