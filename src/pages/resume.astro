@@ -59,6 +59,7 @@ const resume = await fetchApi<Resume>({
                 <a
                   href={social.url}
                   target="_blank"
+                  aria-label={social.name}
                   class="p-2 px-4 rounded-xl hover:bg-stone-700 transition"
                 >
                   <Icon name={social.icon} class="h-5 w-5" />
@@ -111,13 +112,13 @@ const resume = await fetchApi<Resume>({
                         }
                         srcset={
                           import.meta.env.STRAPI_URL +
-                          work.association.logo.formats.tiny.url +
+                          work.association.logo.formats.xs.url +
                           " 1x, " +
                           import.meta.env.STRAPI_URL +
-                          work.association.logo.formats.xs.url +
+                          work.association.logo.formats.small.url +
                           " 2x, " +
                           import.meta.env.STRAPI_URL +
-                          work.association.logo.formats.small.url +
+                          work.association.logo.formats.medium.url +
                           " 3x"
                         }
                         alt={work.association.name}
@@ -126,7 +127,7 @@ const resume = await fetchApi<Resume>({
                         class="h-full object-contain"
                       />
                     </div>
-                    <p class="text-stone-500 text-sm">
+                    <p class="text-stone-400 text-sm">
                       {work.association.name} —{" "}
                       <span class="text-[#92C8F5]">
                         {dayjs(work.start_date).format("YYYY")} -{" "}
@@ -186,7 +187,7 @@ const resume = await fetchApi<Resume>({
                           class="h-full object-contain"
                         />
                       </div>
-                      <p class="text-stone-500 text-sm">
+                      <p class="text-stone-400 text-sm">
                         {institute.association.name} —{" "}
                         <span class="text-[#92C8F5]">
                           {dayjs(institute.end_date).format("YYYY") ===

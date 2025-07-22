@@ -1,6 +1,12 @@
 ---
+import fetchApi from "../lib/strapi";
 import "../styles/global.css";
 import "../styles/icons.css";
+
+const resume = await fetchApi<Resume>({
+  endpoint: "resume",
+  wrappedByKey: "data",
+});
 ---
 
 <!doctype html>
@@ -28,6 +34,8 @@ import "../styles/icons.css";
       crossorigin
     />
     <link rel="dns-prefetch" href="https://analytics.teckdigital.de" />
+    <meta name="theme-color" content="#1e293b" />
+    <meta name="description" content={resume.about} />
     <title>Yannik Hahn</title>
   </head>
   <body class="bg-stone-800">
