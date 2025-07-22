@@ -172,13 +172,13 @@ const resume = await fetchApi<Resume>({
                           }
                           srcset={
                             import.meta.env.STRAPI_URL +
-                            institute.association.logo.formats.tiny.url +
+                            institute.association.logo.formats.xs.url +
                             " 1x, " +
                             import.meta.env.STRAPI_URL +
-                            institute.association.logo.formats.xs.url +
+                            institute.association.logo.formats.small.url +
                             " 2x, " +
                             import.meta.env.STRAPI_URL +
-                            institute.association.logo.formats.small.url +
+                            institute.association.logo.formats.medium.url +
                             " 3x"
                           }
                           alt={institute.association.name}
