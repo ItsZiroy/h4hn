@@ -60,7 +60,6 @@ spec:
             - name: nginx-config
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
-            {{- toYaml .Values.volumeMounts | nindent 12 }}
       volumes:
         - name: nginx-config
           configMap:
