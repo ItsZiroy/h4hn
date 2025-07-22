@@ -1,0 +1,32 @@
+{{- if .Values.nginx.configmap.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "helm.fullname" . }}-nginx-config
+  namespace: {{ .Release.Namespace }}
+data:
+  nginx.conf: |
+    worker_processes 1;
+
+    events { worker_connections 1024; }
+
+    http {
+        include       mime.types;
+        default_type  application/octet-stream;
+
+        server {
+            listen 3000;
+            root /usr/share/nginx/html;
+            index index.html;
+
+            location / {
+                try_files $uri $uri/ =404;
+            }
+
+            # Cache control for _astro assets
+            location ~* /_astro/.*\.(js|css|mjs|html|json|webp|svg|png|jpg|jpeg|gif|woff2?)$ {
+                add_header Cache-Control "public, max-age=2592000, immutable";
+            }
+        }
+    }
+{{- end }}

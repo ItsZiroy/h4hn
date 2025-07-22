@@ -10,8 +10,12 @@ RUN yarn install --frozen-lockfile
 COPY . .
 RUN yarn build
 
-# Serve with busybox
-FROM busybox:1.37
-COPY --from=builder /app/dist /www
-CMD ["httpd", "-f", "-v", "-p", "3000", "-h", "/www"]
+# Serve with NGINX
+FROM nginx:1.29-alpine-slim
+
+# Copy build output
+COPY --from=builder /app/dist /usr/share/nginx/html
+
 EXPOSE 3000
+
+CMD ["nginx", "-g", "daemon off;"]
