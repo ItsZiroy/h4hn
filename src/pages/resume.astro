@@ -5,11 +5,17 @@ import { Image } from "astro:assets";
 import fetchApi from "../lib/strapi";
 
 import { Icon } from "astro-icon/components";
-import { formDataToObject } from "astro:actions";
 import Markdown from "../components/Markdown.astro";
+
+import type { Resume } from "../interfaces/resume";
+import type { Summary } from "../interfaces/summary";
 
 import dayjs from "dayjs";
 
+const summary = await fetchApi<Summary>({
+  endpoint: "summary",
+  wrappedByKey: "data",
+});
 const resume = await fetchApi<Resume>({
   endpoint: "resume",
   wrappedByKey: "data",
@@ -49,8 +55,8 @@ const resume = await fetchApi<Resume>({
             alt="Profile Photo"
             class="w-32 h-32 rounded-full object-cover border-4 border-white mb-4"
           />
-          <h1 class="text-2xl font-bold">{resume.name}</h1>
-          <p class="text-gray-400">{resume.title}</p>
+          <h1 class="text-2xl font-bold">{summary.name}</h1>
+          <p class="text-gray-400">{summary.title}</p>
 
           <!-- Social Icons -->
           <div class="flex space-x-1 mt-4">

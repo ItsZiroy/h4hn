@@ -1,4 +1,5 @@
 ---
+import type { Summary } from "../interfaces/summary";
 import MainLayout from "../layouts/MainLayout.astro";
 import fetchApi from "../lib/strapi";
 import { Image, Picture } from "astro:assets";
@@ -8,7 +9,7 @@ import { Image, Picture } from "astro:assets";
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 
-const summary = await fetchApi<CurrentJob>({
+const summary = await fetchApi<Summary>({
   endpoint: "summary",
   wrappedByKey: "data",
   query: {
@@ -33,6 +34,7 @@ const summary = await fetchApi<CurrentJob>({
         width={200}
         height={200}
         formats={["avif", "webp"]}
+        loading={"eager"}
         src={import.meta.env.STRAPI_URL + summary.picture.url}
         alt="Profile Image"
         class="rounded-full border-4 border-white shadow-lg object-cover"
@@ -49,10 +51,7 @@ const summary = await fetchApi<CurrentJob>({
         <div class="flex items-center gap-10 mt-2">
           {
             summary.associations.map((association) => (
-              <div
-                key={association.id}
-                class="flex items-center justify-center"
-              >
+              <div class="flex items-center justify-center">
                 <Image
                   inferSize={true}
                   src={
