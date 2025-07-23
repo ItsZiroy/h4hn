@@ -3,42 +3,47 @@ import WarpButton from "../components/WarpButton.astro";
 import Layout from "./Layout.astro";
 
 const pathname = Astro.url.pathname;
+
+const { is404 } = Astro.props;
 ---
 
 <Layout>
-  <nav class="w-full fixed top-0 left-0 z-50 bg-neutral text-white">
-    <div class="max-w-5xl mx-auto px-6 py-4 flex justify-center gap-1 md:gap-8">
-      <!-- <a href="/blog">
+    <nav class="w-full fixed top-0 left-0 z-50 bg-neutral text-white">
+        <div
+            class="max-w-5xl mx-auto px-6 py-4 flex justify-center gap-1 md:gap-8"
+        >
+            <!-- <a href="/blog">
         <WarpButton
           warpProps={{ offsetX: -2 }}
           showWarp={path === "/blog"}
           client:idle>Blog</WarpButton
         >
       </a> -->
-      <a href="/resume">
-        <WarpButton
-          warpProps={{ offsetX: -1 }}
-          buttonProps={{ className: "text-xs md:text-base" }}
-          showWarp={pathname === "/resume"}>Resume</WarpButton
-        >
-      </a>
-      <a href="/">
-        <WarpButton
-          warpProps={{ offsetX: 0 }}
-          buttonProps={{
-            className: "hover:text-white text-sm md:text-lg font-bold",
-          }}
-          showWarp={pathname === "/"}>Yannik Hahn</WarpButton
-        >
-      </a>
-      <a href="/projects">
-        <WarpButton
-          warpProps={{ offsetX: 1 }}
-          buttonProps={{ className: "text-xs md:text-base" }}
-          showWarp={pathname === "/projects"}>Projects</WarpButton
-        >
-      </a>
-      <!-- <a href="/contact">
+            <a href="/resume">
+                <WarpButton
+                    warpProps={{ offsetX: -1 }}
+                    buttonProps={{ className: "text-xs md:text-base" }}
+                    showWarp={pathname === "/resume"}>Resume</WarpButton
+                >
+            </a>
+            <a href="/">
+                <WarpButton
+                    warpProps={{ offsetX: 0 }}
+                    buttonProps={{
+                        className:
+                            "hover:text-white text-sm md:text-lg font-bold",
+                    }}
+                    showWarp={pathname === "/" || is404}>Yannik Hahn</WarpButton
+                >
+            </a>
+            <a href="/projects">
+                <WarpButton
+                    warpProps={{ offsetX: 1 }}
+                    buttonProps={{ className: "text-xs md:text-base" }}
+                    showWarp={pathname === "/projects"}>Projects</WarpButton
+                >
+            </a>
+            <!-- <a href="/contact">
         <WarpButton
           warpProps={{ offsetX: 2 }}
           buttonProps={{ className: "hover:text-white" }}
@@ -46,10 +51,10 @@ const pathname = Astro.url.pathname;
           client:idle>Contact</WarpButton
         >
       </a> -->
-    </div>
-  </nav>
+        </div>
+    </nav>
 </Layout>
 
 <main class="relative pt-20">
-  <slot />
+    <slot />
 </main>

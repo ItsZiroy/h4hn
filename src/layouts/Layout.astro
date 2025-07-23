@@ -5,55 +5,56 @@ import "../styles/global.css";
 import "../styles/icons.css";
 
 const resume = await fetchApi<Resume>({
-  endpoint: "resume",
-  wrappedByKey: "data",
+    endpoint: "resume",
+    wrappedByKey: "data",
 });
 ---
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link
-      rel="icon"
-      type="image/png"
-      href="/favicon/favicon-96x96.png"
-      sizes="96x96"
-    />
-    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon/favicon.ico" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="/favicon/apple-touch-icon.png"
-    />
-    <link rel="manifest" href="/favicon/site.webmanifest" />
-    <link
-      rel="preconnect"
-      href="https://analytics.teckdigital.de"
-      crossorigin
-    />
-    <link rel="dns-prefetch" href="https://analytics.teckdigital.de" />
-    <meta name="theme-color" content="#1e293b" />
-    <meta name="description" content={resume.about} />
-    <title>Yannik Hahn</title>
-  </head>
-  <body class="bg-stone-800">
-    <slot />
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="sitemap" href="/sitemap-index.xml" />
+        <link
+            rel="icon"
+            type="image/png"
+            href="/favicon/favicon-96x96.png"
+            sizes="96x96"
+        />
+        <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon/favicon.ico" />
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/favicon/apple-touch-icon.png"
+        />
+        <link rel="manifest" href="/favicon/site.webmanifest" />
+        <link
+            rel="preconnect"
+            href="https://analytics.teckdigital.de"
+            crossorigin
+        />
+        <link rel="dns-prefetch" href="https://analytics.teckdigital.de" />
+        <meta name="theme-color" content="#1e293b" />
+        <meta name="description" content={resume.about} />
+        <title>Yannik Hahn</title>
+    </head>
+    <body class="bg-stone-800">
+        <slot />
+    </body>
 </html>
 
 <style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
+    html,
+    body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
 </style>
 
 <script
-  defer
-  data-domain="h4hn.de"
-  src="https://analytics.teckdigital.de/js/script.outbound-links.js"></script>
+    defer
+    data-domain="h4hn.de"
+    src="https://analytics.teckdigital.de/js/script.outbound-links.js"></script>
