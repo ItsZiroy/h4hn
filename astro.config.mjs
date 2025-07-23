@@ -9,7 +9,14 @@ import playformCompress from "@playform/compress";
 
 import compressor from "astro-compressor";
 
+import { loadEnv } from "vite";
+
+import sitemap from "@astrojs/sitemap";
+
+const { SITE_URL } = loadEnv(process.env.SITE_URL, process.cwd(), "");
+
 export default defineConfig({
+  site: SITE_URL,
   trailingSlash: "never",
   prefetch: {
     prefetchAll: true,
@@ -36,7 +43,7 @@ export default defineConfig({
       },
     ],
   },
-  integrations: [react(), icon(), playformCompress(), compressor()],
+  integrations: [react(), icon(), sitemap(), playformCompress(), compressor()],
   vite: {
     plugins: [tailwindcss()],
   },

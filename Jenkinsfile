@@ -6,6 +6,7 @@ def localBranchToGitopsValuesPath = [
 ]
 
 def cmsEndpoint = "https://cms.h4hn.de"
+def siteUrl = "https://h4hn.de"
 
 pipeline {
    agent {
@@ -13,7 +14,7 @@ pipeline {
         inheritFrom "kaniko-template"
     }
   }
-    
+
     stages {
         stage('Build and Tag Image') {
             steps {
@@ -26,6 +27,7 @@ pipeline {
                             buildDockerImage(buildArgs: [
                                 "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
                                 "STRAPI_URL=${cmsEndpoint}",
+                                "SITE_URL=${siteUrl}",
                                 "STRAPI_TOKEN=${STRAPI_TOKEN}"
                             ],
                             imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}"
@@ -47,10 +49,10 @@ pipeline {
                     def valuesPath = localBranchToGitopsValuesPath[getLocalBranchName()]
 
                     updateGitops(imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}",
-                                appName: appName, 
-                                valuesPath: valuesPath, 
-                                gitOpsRepo: gitOpsRepo, 
-                                credentialsId: "itsziroy-github-user" , 
+                                appName: appName,
+                                valuesPath: valuesPath,
+                                gitOpsRepo: gitOpsRepo,
+                                credentialsId: "itsziroy-github-user" ,
                                 gitUserEmail: "yannik@h4hn.de")
                 }
             }
