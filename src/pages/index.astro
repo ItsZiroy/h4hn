@@ -35,6 +35,7 @@ const summary = await fetchApi<Summary>({
         height={200}
         formats={["avif", "webp"]}
         loading={"eager"}
+        fetchpriority={"high"}
         src={import.meta.env.STRAPI_URL + summary.picture.url}
         alt="Profile Image"
         class="rounded-full border-4 border-white shadow-lg object-cover"
