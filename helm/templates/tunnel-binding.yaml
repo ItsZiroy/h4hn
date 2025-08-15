@@ -24,7 +24,7 @@ subjects:
     - name: {{ .Values.tunnelBinding.subject.name | default "traefik-web-service" }}
       kind: Service
       spec:
-        fqdn: www.{{ .Values.hostname | quote }}
+        fqdn: {{ printf "www.%s" .Values.hostname | quote }}
         target: {{ .Values.tunnelBinding.subject.target | default "https://traefik-web-service.net.svc.cluster.local:443" | quote }}
         noTlsVerify: {{ .Values.tunnelBinding.subject.noTlsVerify | default true }}
 tunnelRef:
