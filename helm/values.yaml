@@ -73,6 +73,16 @@ ingressRoute:
 #        - name: teckdigital-website
 #          port: 80:80
 
+tunnelBinding:
+  enabled: true
+  subject:
+    name: ""
+    target: ""
+    noTlsVerify: true
+  tunnelRef:
+    kind: ""
+    name: ""
+
 resources:
   {}
   # We usually recommend not to specify default resources and to leave this as a conscious
