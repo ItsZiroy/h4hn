@@ -5,6 +5,10 @@ def localBranchToGitopsValuesPath = [
     'main': 'apps/h4hn/ui/values.yaml',
 ]
 
+def standaloneBranchToGitopsValuesPath = [
+    'main': 'apps/h4hn/ui-preview/values.yaml',
+]
+
 def cmsEndpoint = "https://cms.h4hn.de"
 def siteUrl = "https://h4hn.de"
 
@@ -65,22 +69,47 @@ pipeline {
         }
 
         stage('Update GitOps') {
-            when {
+            parallel {
+            stage('Update Static GitOps') {
+                when {
                 expression {
                     return localBranchToGitopsValuesPath.containsKey(getLocalBranchName())
                 }
-            }
-            steps {
+                }
+                steps {
                 script {
                     def valuesPath = localBranchToGitopsValuesPath[getLocalBranchName()]
-
-                    updateGitops(imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}",
-                                appName: appName,
-                                valuesPath: valuesPath,
-                                gitOpsRepo: gitOpsRepo,
-                                credentialsId: "itsziroy-github-user" ,
-                                gitUserEmail: "yannik@h4hn.de")
+                    updateGitops(
+                    imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}",
+                    appName: appName,
+                    valuesPath: valuesPath,
+                    gitOpsRepo: gitOpsRepo,
+                    credentialsId: "itsziroy-github-user",
+                    gitUserEmail: "yannik@h4hn.de"
+                    )
                 }
+                }
+            }
+            stage('Update Standalone GitOps') {
+                when {
+                expression {
+                    return standaloneBranchToGitopsValuesPath.containsKey(getLocalBranchName())
+                }
+                }
+                steps {
+                script {
+                    def valuesPath = standaloneBranchToGitopsValuesPath[getLocalBranchName()]
+                    updateGitops(
+                    imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}",
+                    appName: appName,
+                    valuesPath: valuesPath,
+                    gitOpsRepo: gitOpsRepo,
+                    credentialsId: "itsziroy-github-user",
+                    gitUserEmail: "yannik@h4hn.de"
+                    )
+                }
+                }
+            }
             }
         }
     }
