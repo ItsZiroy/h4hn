@@ -23,41 +23,45 @@ pipeline {
         stage('Build and Tag Images') {
             parallel {
                 stage('Build Static') {
-                    container('kaniko') {
-                        dir("workspace-static") {  // separate directory
-                            withCredentials([
-                                string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
-                                string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
-                            ]) {
-                                buildDockerImage(buildArgs: [
-                                    "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
-                                    "STRAPI_URL=${cmsEndpoint}",
-                                    "SITE_URL=${siteUrl}",
-                                    "STRAPI_TOKEN=${STRAPI_TOKEN}",
-                                    "STANDALONE=false",
-                                    "DRAFT_MODE=false"
-                                ],
-                                imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-static"
-                                )
+                    steps {
+                        container('kaniko') {
+                            dir("workspace-static") {  // separate directory
+                                withCredentials([
+                                    string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
+                                    string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
+                                ]) {
+                                    buildDockerImage(buildArgs: [
+                                        "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
+                                        "STRAPI_URL=${cmsEndpoint}",
+                                        "SITE_URL=${siteUrl}",
+                                        "STRAPI_TOKEN=${STRAPI_TOKEN}",
+                                        "STANDALONE=false",
+                                        "DRAFT_MODE=false"
+                                    ],
+                                    imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-static"
+                                    )
+                                }
                             }
                         }
                     }
                 }
                 stage('Build Standalone') {
-                    container('kaniko') {
-                        dir("workspace-standalone") {  // separate directory
-                            withCredentials([
-                                string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
-                                string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
-                            ]) {
-                                buildDockerImage(buildArgs: [
-                                    "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
-                                    "SITE_URL=${siteUrl}",
-                                    "STANDALONE=true"
-                                ],
-                                dockerFilePath: "Dockerfile.standalone",
-                                imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-standalone"
-                                )
+                    steps {
+                        container('kaniko') {
+                            dir("workspace-standalone") {  // separate directory
+                                withCredentials([
+                                    string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
+                                    string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
+                                ]) {
+                                    buildDockerImage(buildArgs: [
+                                        "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
+                                        "SITE_URL=${siteUrl}",
+                                        "STANDALONE=true"
+                                    ],
+                                    dockerFilePath: "Dockerfile.standalone",
+                                    imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-standalone"
+                                    )
+                                }
                             }
                         }
                     }
