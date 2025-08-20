@@ -22,7 +22,7 @@ pipeline {
     stages {
         stage('Build and Tag Images') {
             parallel(
-                "Static Image": {
+                stage('Build Static') {
                     container('kaniko') {
                         dir("workspace-static") {  // separate directory
                             withCredentials([
@@ -43,7 +43,7 @@ pipeline {
                         }
                     }
                 },
-                "Standalone Image": {
+                stage('Build Standalone') {
                     container('kaniko') {
                         dir("workspace-standalone") {  // separate directory
                             withCredentials([
