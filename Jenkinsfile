@@ -25,7 +25,9 @@ pipeline {
                 stage('Build Static') {
                     steps {
                         container('kaniko') {
-                            dir("workspace-static") {  // separate directory
+                            // Copy source code to separate directory for static build
+                            sh 'cp -r . workspace-static/'
+                            dir("workspace-static") {
                                 withCredentials([
                                     string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
                                     string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
@@ -48,7 +50,9 @@ pipeline {
                 stage('Build Standalone') {
                     steps {
                         container('kaniko') {
-                            dir("workspace-standalone") {  // separate directory
+                            // Copy source code to separate directory for standalone build
+                            sh 'cp -r . workspace-standalone/'
+                            dir("workspace-standalone") {
                                 withCredentials([
                                     string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
                                     string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
@@ -81,7 +85,7 @@ pipeline {
                 script {
                     def valuesPath = localBranchToGitopsValuesPath[getLocalBranchName()]
                     updateGitops(
-                    imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}",
+                    imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-static",
                     appName: appName,
                     valuesPath: valuesPath,
                     gitOpsRepo: gitOpsRepo,
@@ -99,9 +103,9 @@ pipeline {
                 }
                 steps {
                 script {
-                    def valuesPath = localBranchToGitopsValuesPath[getLocalBranchName()]
+                    def valuesPath = standaloneBranchToGitopsValuesPath[getLocalBranchName()]
                     updateGitops(
-                    imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}",
+                    imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-standalone",
                     appName: appName,
                     valuesPath: valuesPath,
                     gitOpsRepo: gitOpsRepo,
