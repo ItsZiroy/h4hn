@@ -38,11 +38,10 @@ pipeline {
                                             "STRAPI_URL=${cmsEndpoint}",
                                             "SITE_URL=${siteUrl}",
                                             "STRAPI_TOKEN=${STRAPI_TOKEN}",
-                                            "STANDALONE=false",
-                                            "DRAFT_MODE=false",
-                                            "YARN_CACHE_FOLDER=/tmp/yarn-cache-static"
+                                            "DRAFT_MODE=false"
                                         ],
-                                        imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-static"
+                                        repoSuffix: "/static",
+                                        imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}"
                                         )
                                     }
                                 }
@@ -89,11 +88,11 @@ pipeline {
                                         buildDockerImage(buildArgs: [
                                             "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
                                             "SITE_URL=${siteUrl}",
-                                            "STANDALONE=true",
-                                            "YARN_CACHE_FOLDER=/tmp/yarn-cache-standalone"
+                                            "STANDALONE=true"
                                         ],
                                         dockerFilePath: "Dockerfile.standalone",
-                                        imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-standalone"
+                                        repoSuffix: "/standalone",
+                                        imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}"
                                         )
                                     }
                                 }

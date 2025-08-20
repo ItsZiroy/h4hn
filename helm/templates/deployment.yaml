@@ -41,7 +41,7 @@ spec:
           {{- if .Values.image.override}}
           image: "{{.Values.image.override}}"
           {{- else}}
-          image: "{{.Values.image.registry | default "registry.teckdigital.de" }}/kube/{{ .Values.organization }}/{{ .Values.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}-{{ .Values.mode }}"
+          image: "{{.Values.image.registry | default "registry.teckdigital.de" }}/kube/{{ .Values.organization }}/{{ .Values.repository }}/{{ .Values.mode }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           {{- end }}
           {{- if .Values.image.override }}
           {{- end}}
@@ -50,6 +50,17 @@ spec:
             {{- if .Values.draftMode }}
             - name: DRAFT_MODE
               value: "true"
+            {{- end }}
+            {{- if .Values.strapi.url }}
+            - name: STRAPI_URL
+              value: {{ .Values.strapi.url }}
+            {{- end }}
+            {{- if .Values.strapi.token.secretName }}
+            - name: STRAPI_TOKEN
+              valueFrom:
+              secretKeyRef:
+                name: {{ .Values.strapi.token.secretName }}
+                key: {{ .Values.strapi.token.secretKey }}
             {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 2 }}

@@ -22,6 +22,12 @@ nginx:
   configmap:
     enabled: true
 
+strapi:
+  url: ""
+  token:
+    secretName: ""
+    secretKey: ""
+
 imagePullSecrets: []
 
 nameOverride: ""
