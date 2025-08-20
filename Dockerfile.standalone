@@ -3,11 +3,9 @@ FROM node:22-alpine AS builder
 ARG SITE_URL
 ENV SITE_URL=${SITE_URL}
 ENV STANDALONE=true
-ARG YARN_CACHE_FOLDER=/tmp/yarn-cache
-ENV YARN_CACHE_FOLDER=${YARN_CACHE_FOLDER}
 WORKDIR /app
 COPY package*.json ./
-RUN yarn install --frozen-lockfile --cache-folder ${YARN_CACHE_FOLDER}
+RUN yarn install --frozen-lockfile
 COPY . .
 RUN export $(cat .env.runtime) && yarn build
 
