@@ -62,14 +62,18 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.nginx.configmap.enabled }}
           volumeMounts:
             - name: nginx-config
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
+          {{- end }}
+      {{- if .Values.nginx.configmap.enabled }}
       volumes:
         - name: nginx-config
           configMap:
             name: {{ include "helm.fullname" . }}-nginx-config
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
