@@ -58,7 +58,7 @@ pipeline {
                                 script {
                                     def valuesPath = localBranchToGitopsValuesPath[getLocalBranchName()]
                                     updateGitops(
-                                        imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-static",
+                                        imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}",
                                         appName: appName,
                                         valuesPath: valuesPath,
                                         gitOpsRepo: gitOpsRepo,
@@ -109,7 +109,7 @@ pipeline {
                                 script {
                                     def valuesPath = standaloneBranchToGitopsValuesPath[getLocalBranchName()]
                                     updateGitops(
-                                        imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-standalone",
+                                        imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}",
                                         appName: appName,
                                         valuesPath: valuesPath,
                                         gitOpsRepo: gitOpsRepo,
