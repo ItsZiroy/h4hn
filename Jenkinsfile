@@ -25,24 +25,21 @@ pipeline {
                 stage('Build Static') {
                     steps {
                         container('kaniko') {
-                            // Copy source code to separate directory for static build
-                            sh 'cp -r . workspace-static/'
-                            dir("workspace-static") {
-                                withCredentials([
-                                    string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
-                                    string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
-                                ]) {
-                                    buildDockerImage(buildArgs: [
-                                        "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
-                                        "STRAPI_URL=${cmsEndpoint}",
-                                        "SITE_URL=${siteUrl}",
-                                        "STRAPI_TOKEN=${STRAPI_TOKEN}",
-                                        "STANDALONE=false",
-                                        "DRAFT_MODE=false"
-                                    ],
-                                    imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-static"
-                                    )
-                                }
+                            withCredentials([
+                                string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
+                                string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
+                            ]) {
+                                buildDockerImage(buildArgs: [
+                                    "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
+                                    "STRAPI_URL=${cmsEndpoint}",
+                                    "SITE_URL=${siteUrl}",
+                                    "STRAPI_TOKEN=${STRAPI_TOKEN}",
+                                    "STANDALONE=false",
+                                    "DRAFT_MODE=false",
+                                    "YARN_CACHE_FOLDER=/tmp/yarn-cache-static"
+                                ],
+                                imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-static"
+                                )
                             }
                         }
                     }
@@ -50,22 +47,19 @@ pipeline {
                 stage('Build Standalone') {
                     steps {
                         container('kaniko') {
-                            // Copy source code to separate directory for standalone build
-                            sh 'cp -r . workspace-standalone/'
-                            dir("workspace-standalone") {
-                                withCredentials([
-                                    string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
-                                    string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
-                                ]) {
-                                    buildDockerImage(buildArgs: [
-                                        "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
-                                        "SITE_URL=${siteUrl}",
-                                        "STANDALONE=true"
-                                    ],
-                                    dockerFilePath: "Dockerfile.standalone",
-                                    imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-standalone"
-                                    )
-                                }
+                            withCredentials([
+                                string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
+                                string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
+                            ]) {
+                                buildDockerImage(buildArgs: [
+                                    "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
+                                    "SITE_URL=${siteUrl}",
+                                    "STANDALONE=true",
+                                    "YARN_CACHE_FOLDER=/tmp/yarn-cache-standalone"
+                                ],
+                                dockerFilePath: "Dockerfile.standalone",
+                                imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-standalone"
+                                )
                             }
                         }
                     }

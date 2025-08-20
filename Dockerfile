@@ -4,20 +4,19 @@ ARG STRAPI_URL
 ARG SITE_URL
 ARG STRAPI_TOKEN
 ARG DRAFT_MODE
+ARG YARN_CACHE_FOLDER=/tmp/yarn-cache
 ENV STRAPI_URL=${STRAPI_URL}
 ENV SITE_URL=${SITE_URL}
 ENV STRAPI_TOKEN=${STRAPI_TOKEN}
 ENV DRAFT_MODE=${DRAFT_MODE}
+ENV YARN_CACHE_FOLDER=${YARN_CACHE_FOLDER}
 WORKDIR /app
 COPY package*.json ./
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --cache-folder ${YARN_CACHE_FOLDER}
 COPY . .
 RUN yarn build
-
 # Serve with NGINX
 FROM nginx:1.29-alpine-slim
-
 # Copy build output
 COPY --from=builder /app/dist /usr/share/nginx/html
-
 CMD ["nginx", "-g", "daemon off;"]
