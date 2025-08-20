@@ -58,9 +58,9 @@ spec:
             {{- if .Values.strapi.token.secretName }}
             - name: STRAPI_TOKEN
               valueFrom:
-              secretKeyRef:
-                name: {{ .Values.strapi.token.secretName }}
-                key: {{ .Values.strapi.token.secretKey }}
+                secretKeyRef:
+                  name: {{ .Values.strapi.token.secretName }}
+                  key: {{ .Values.strapi.token.secretKey }}
             {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 2 }}
