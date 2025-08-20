@@ -47,11 +47,13 @@ spec:
           {{- end}}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            {{- if .Values.draftMode -}}
+            {{- if .Values.draftMode }}
             - name: DRAFT_MODE
               value: "true"
             {{- end }}
-            {{- toYaml .Values.env | nindent 12 }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 2 }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.container.port | default 3000 }}
