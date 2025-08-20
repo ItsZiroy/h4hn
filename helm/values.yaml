@@ -4,6 +4,9 @@
 
 replicaCount: 1
 
+mode: static # or standalone
+draftMode: false
+
 namespace:
   create: true
 

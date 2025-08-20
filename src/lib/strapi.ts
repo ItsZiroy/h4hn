@@ -25,12 +25,21 @@ export default async function fetchApi<T>({
     endpoint = endpoint.slice(1);
   }
 
+  const draftMode = import.meta.env.DRAFT_MODE === "true";
+
   const baseUrl = `${import.meta.env.STRAPI_URL}/api/${endpoint}`;
   let url = baseUrl;
 
   if (query) {
     const queryString = qs.stringify(query, { encodeValuesOnly: true });
     url += `?${queryString}`;
+    if (draftMode) {
+      url += `&status=draft`;
+    }
+  } else {
+    if (draftMode) {
+      url += `?status=draft`;
+    }
   }
 
   const res = await fetch(url, {

@@ -41,10 +41,16 @@ spec:
           {{- if .Values.image.override}}
           image: "{{.Values.image.override}}"
           {{- else}}
-          image: "{{.Values.image.registry | default "registry.teckdigital.de" }}/kube/{{ .Values.organization }}/{{ .Values.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{.Values.image.registry | default "registry.teckdigital.de" }}/kube/{{ .Values.organization }}/{{ .Values.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}-{{ .Values.mode }}"
+          {{- end }}
+          {{- if .Values.image.override }}
           {{- end}}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            {{- if .Values.draftMode -}}
+            - name: DRAFT_MODE
+              value: "true"
+            {{- end }}
             {{- toYaml .Values.env | nindent 12 }}
           ports:
             - name: http

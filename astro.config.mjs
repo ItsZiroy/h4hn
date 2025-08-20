@@ -12,10 +12,18 @@ import compressor from "astro-compressor";
 import { loadEnv } from "vite";
 
 import sitemap from "@astrojs/sitemap";
+import node from "@astrojs/node";
 
 const { SITE_URL } = loadEnv(process.env.SITE_URL, process.cwd(), "");
+const { STANDALONE } = loadEnv(process.env.STANDALONE, process.cwd(), "");
 
 export default defineConfig({
+  output: STANDALONE ? "server" : "static",
+  adapter: STANDALONE
+    ? node({
+        mode: "standalone",
+      })
+    : undefined,
   site: SITE_URL,
   trailingSlash: "never",
   prefetch: {

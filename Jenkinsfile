@@ -16,25 +16,51 @@ pipeline {
   }
 
     stages {
-        stage('Build and Tag Image') {
-            steps {
+        stage('Build and Tag Images') {
+            parallel {
+            stage('Build Static Image') {
+                steps {
                 container('kaniko') {
                     script {
-                        withCredentials([
-                            string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
-                            string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
-                        ]) {
-                            buildDockerImage(buildArgs: [
-                                "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
-                                "STRAPI_URL=${cmsEndpoint}",
-                                "SITE_URL=${siteUrl}",
-                                "STRAPI_TOKEN=${STRAPI_TOKEN}"
-                            ],
-                            imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}"
-                            )
-                        }
+                    withCredentials([
+                        string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
+                        string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
+                    ]) {
+                        buildDockerImage(buildArgs: [
+                        "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
+                        "STRAPI_URL=${cmsEndpoint}",
+                        "SITE_URL=${siteUrl}",
+                        "STRAPI_TOKEN=${STRAPI_TOKEN}",
+                        "STANDALONE=false",
+                        "DRAFT_MODE=false"
+                        ],
+                        imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-static"
+                        )
+                    }
                     }
                 }
+                }
+            }
+            stage('Build Standalone Image') {
+                steps {
+                container('kaniko') {
+                    script {
+                    withCredentials([
+                        string(credentialsId: 'teckdigital-service-user-token', variable: 'SERVICE_USER_TOKEN'),
+                        string(credentialsId: 'strapi-token', variable: 'STRAPI_TOKEN')
+                    ]) {
+                        buildDockerImage(buildArgs: [
+                        "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
+                        "SITE_URL=${siteUrl}",
+                        "STANDALONE=true"
+                        ],
+                        imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-standalone"
+                        )
+                    }
+                    }
+                }
+                }
+            }
             }
         }
 

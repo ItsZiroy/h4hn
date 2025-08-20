@@ -1,0 +1,24 @@
+# Build stage
+FROM node:22-alpine AS builder
+ARG SITE_URL
+ENV SITE_URL=${SITE_URL}
+ENV STANDALONE=true
+WORKDIR /app
+COPY package*.json ./
+RUN yarn install --frozen-lockfile
+COPY . .
+RUN export $(cat .env.runtime) && yarn build
+
+# Serve with NGINX
+FROM node:22-alpine
+
+WORKDIR /app
+# Copy build output
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+
+
+ENV HOST=0.0.0.0
+ENV PORT=3000
+
+CMD ["node", "./dist/server/entry.mjs"]
