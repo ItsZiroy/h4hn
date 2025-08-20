@@ -21,7 +21,7 @@ pipeline {
 
     stages {
         stage('Build and Tag Images') {
-            parallel(
+            parallel {
                 stage('Build Static') {
                     container('kaniko') {
                         dir("workspace-static") {  // separate directory
@@ -61,7 +61,7 @@ pipeline {
                         }
                     }
                 }
-            )
+            }
         }
 
         stage('Update GitOps') {
