@@ -55,7 +55,7 @@ pipeline {
                                     "SITE_URL=${siteUrl}",
                                     "STANDALONE=true"
                                 ],
-                                dockerFilePath: "Dockerfile.standalone"
+                                dockerFilePath: "Dockerfile.standalone",
                                 imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}-standalone"
                                 )
                             }
