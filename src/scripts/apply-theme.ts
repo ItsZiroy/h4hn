@@ -27,6 +27,8 @@
 
     const savedTheme = getCookie("theme");
 
+    console.log(savedTheme);
+
     // If no saved theme, use system preference
     if (!savedTheme) {
       const isDarkMode = window.matchMedia(
@@ -38,6 +40,9 @@
         document.documentElement.classList.remove("dark");
       }
       updateThemeColor(isDarkMode);
+    } else {
+      document.documentElement.classList.toggle("dark", savedTheme === "dark");
+      updateThemeColor(savedTheme === "dark");
     }
     // If there is a saved theme, it's already applied by the server-side class
   } catch (_) {}

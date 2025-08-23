@@ -9,23 +9,14 @@ const resume = await fetchApi<Resume>({
   endpoint: "resume",
   wrappedByKey: "data",
 });
-
-// Get theme from cookie server-side
-const themeCookie = Astro.cookies.get("theme");
-const savedTheme = themeCookie?.value;
-
-// Since we can't detect system preference server-side, we'll default to light
-// and let the client-side JavaScript handle system preference detection
-const isDark = savedTheme === "dark";
-const themeClass = isDark ? "dark" : "";
 ---
 
 <!doctype html>
-<html lang="en" class={themeClass}>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="theme-color" content={isDark ? "#282524" : "#FDF9F1"} />
+    <meta name="theme-color" content={"#FDF9F1"} />
     <meta name="description" content={resume.about} />
 
     <script src="../scripts/apply-theme.ts"></script>
