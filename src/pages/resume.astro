@@ -136,7 +136,7 @@ const resume = await fetchApi<Resume>({
                     </div>
                     <p class="text-stone-700 dark:text-stone-400 text-sm">
                       {work.association.name} —{" "}
-                      <span class="text-[#92C8F5]">
+                      <span class="text-[#1c5e94] dark:text-[#92C8F5]">
                         {dayjs(work.start_date).format("YYYY")} -{" "}
                         {work.end_date
                           ? dayjs(work.end_date).format("YYYY")
@@ -189,7 +189,7 @@ const resume = await fetchApi<Resume>({
                       </div>
                       <p class="text-stone-700 dark:text-stone-400 text-sm">
                         {institute.association.name} —{" "}
-                        <span class="text-[#92C8F5]">
+                        <span class="text-[#1c5e94] dark:text-[#92C8F5]">
                           {dayjs(institute.end_date).format("YYYY") ===
                           dayjs(institute.start_date).format("YYYY")
                             ? dayjs(institute.start_date).format("YYYY")
