@@ -17,7 +17,7 @@ const savedTheme = themeCookie?.value;
 // Since we can't detect system preference server-side, we'll default to light
 // and let the client-side JavaScript handle system preference detection
 const isDark = savedTheme === "dark";
-const themeClass = isDark ? "dark" : "";
+const themeClass = isDark ? "dark" : undefined;
 ---
 
 <!doctype html>
