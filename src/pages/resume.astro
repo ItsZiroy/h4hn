@@ -11,6 +11,7 @@ import type { Summary } from "../interfaces/summary";
 
 import dayjs from "dayjs";
 import ThemedImage from "../components/ThemedImage.astro";
+import { Picture } from "astro:assets";
 
 const summary = await fetchApi<Summary>({
   endpoint: "summary",
@@ -48,11 +49,14 @@ const resume = await fetchApi<Resume>({
       <!-- Sidebar -->
       <aside class="md:sticky md:top-32 self-start">
         <div class="rounded-2xl p-6 flex flex-col items-center text-center">
-          <ThemedImage
+          <Picture
             height={128}
             width={128}
-            image={resume.picture}
-            alt="Profile Photo"
+            formats={["avif", "webp"]}
+            loading={"eager"}
+            fetchpriority={"high"}
+            src={import.meta.env.STRAPI_URL + resume.picture.url}
+            alt="Profile Image"
             class="w-32 h-32 rounded-full object-cover border-4 border-black dark:border-white mb-4"
           />
           <h1 class="text-2xl font-bold">{summary.name}</h1>

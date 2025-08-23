@@ -60,6 +60,7 @@ const summary = await fetchApi<Summary>({
             summary.associations.map((association) => (
               <div class="flex items-center justify-center">
                 <ThemedImage
+                  inferSize={true}
                   alt={association.name}
                   image={association.logo}
                   imageDark={association.logo_dark}

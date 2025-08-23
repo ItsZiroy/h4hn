@@ -51,28 +51,28 @@ const srcLogoDark = size
   ? STRAPI_URL + imageDark?.formats[size].url
   : STRAPI_URL + imageDark?.url;
 
-const srcSetLogo = sizeMap ? getSrcSet(image, sizeMap) : undefined;
-const srcSetLogoDark = sizeMap ? getSrcSet(imageDark, sizeMap) : undefined;
+const srcSetLogoProps = sizeMap ? { srcset: getSrcSet(image, sizeMap) } : {};
+const srcSetLogoDarkProps = sizeMap
+  ? { srcset: getSrcSet(imageDark, sizeMap) }
+  : {};
 ---
 
 <Image
-  inferSize={true}
   src={srcLogo}
-  srcset={srcSetLogo}
   alt={alt}
   class={cn(className, imageDark && "hidden dark:block")}
   title={alt}
+  {...srcSetLogoProps}
   {...rest}
 />
 {
   imageDark && (
     <Image
-      inferSize={true}
       src={srcLogoDark}
-      srcset={srcSetLogoDark}
       alt={alt}
       class={cn(className, "dark:hidden")}
       title={alt}
+      {...srcSetLogoDarkProps}
       {...rest}
     />
   )
