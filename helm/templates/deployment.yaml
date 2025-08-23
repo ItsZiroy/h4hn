@@ -86,7 +86,7 @@ spec:
       {{- if .Values.nginx.configmap.enabled }}
       volumes:
         - name: nginx-config
-            configMap:
+          configMap:
             name: {{ .Values.nginx.configmap.override | default (printf "%s-nginx-config" (include "helm.fullname" .)) }}
       {{- end }}
       {{- with .Values.nodeSelector }}
