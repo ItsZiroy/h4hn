@@ -13,7 +13,9 @@ const { className: buttonClassName, ...restButtonProps } = buttonProps;
     variant="ghost"
     class={cn(
       "text-sm px-7 py-2 font-medium transition duration-200 w-full relative z-10 hover:cursor-pointer",
-      showWarp && "hover:bg-transparent",
+      showWarp
+        ? "hover:bg-transparent"
+        : "dark:hover:bg-gray-900 hover:bg-neutral-200",
       buttonClassName
     )}
     {...restButtonProps}

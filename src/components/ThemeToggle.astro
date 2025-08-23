@@ -1,0 +1,115 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<button
+  id="theme-toggle"
+  aria-label="Toggle theme"
+  class="hover:cursor-pointer"
+>
+  <!-- Light mode icon (shown in dark mode) -->
+  <div id="icon-dark" class="hidden">
+    <Icon name="mdi:moon-and-stars" class="text-white text-2xl ml-2" />
+  </div>
+  <!-- Dark mode icon (shown in light mode) -->
+  <div id="icon-light" class="hidden">
+    <Icon name="mdi:white-balance-sunny" class="text-stone-800 text-2xl ml-2" />
+  </div>
+</button>
+<script>
+  function getCookie(name: string) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+      const part = parts.pop();
+      if (part) return part.split(";").shift();
+    }
+    return null;
+  }
+
+  function setCookie(name: string, value: string, days = 365) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+  }
+
+  function getSystemTheme() {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  }
+
+  function updateThemeColor(isDarkMode: boolean) {
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) {
+      themeColorMeta.textContent = isDarkMode ? "#282524" : "#FDF9F1";
+    }
+  }
+
+  function updateIcons(theme: string) {
+    const iconDark = document.querySelector("#icon-dark");
+    const iconLight = document.querySelector("#icon-light");
+    if (theme === "dark") {
+      iconDark?.classList.remove("hidden");
+      iconLight?.classList.add("hidden");
+    } else {
+      iconDark?.classList.add("hidden");
+      iconLight?.classList.remove("hidden");
+    }
+  }
+
+  function applyTheme(theme: string) {
+    const isDarkMode = theme === "dark";
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    updateIcons(theme);
+    updateThemeColor(isDarkMode);
+  }
+
+  function toggleMode() {
+    const isDark = document.documentElement.classList.contains("dark");
+    const newTheme = isDark ? "light" : "dark";
+    setCookie("theme", newTheme);
+    applyTheme(newTheme);
+  }
+
+  function initializeTheme() {
+    const savedTheme = getCookie("theme");
+    const systemTheme = getSystemTheme();
+    const currentTheme = savedTheme || systemTheme;
+
+    // If no saved preference, apply system theme
+    if (!savedTheme) {
+      applyTheme(currentTheme);
+    } else {
+      // Just update icons since theme is already applied server-side
+      updateIcons(currentTheme);
+    }
+  }
+
+  // Listen for system theme changes
+  function setupSystemThemeListener() {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    mediaQuery.addEventListener("change", (e) => {
+      const savedTheme = getCookie("theme");
+      // Only update if user hasn't set a preference
+      if (!savedTheme) {
+        const newTheme = e.matches ? "dark" : "light";
+        applyTheme(newTheme);
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document
+      .querySelector("#theme-toggle")
+      ?.addEventListener("click", toggleMode);
+
+    // Initialize theme and setup listeners
+    initializeTheme();
+    setupSystemThemeListener();
+  });
+</script>

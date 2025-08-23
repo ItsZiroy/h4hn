@@ -1,0 +1,79 @@
+---
+import {
+  Image,
+  type LocalImageProps,
+  type RemoteImageProps,
+} from "astro:assets";
+import { cn } from "../lib/utils";
+import type File from "../interfaces/file";
+
+type SizeMap = Record<
+  string,
+  "tiny" | "xs" | "small" | "medium" | "large" | "xl"
+>;
+
+type Props = {
+  alt: string;
+  image: File;
+  imageDark?: File;
+  size?: "tiny" | "xs" | "small" | "medium" | "large" | "xl";
+  sizeMap?: SizeMap;
+} & Partial<LocalImageProps | RemoteImageProps>;
+
+const {
+  alt,
+  image,
+  imageDark,
+  src,
+  size,
+  sizeMap,
+  class: className,
+  ...rest
+} = Astro.props;
+const STRAPI_URL = import.meta.env.STRAPI_URL;
+
+// Generate srcset string from available formats
+function getSrcSet(
+  img: File | undefined,
+  map: Record<string, "tiny" | "xs" | "small" | "medium" | "large" | "xl">
+) {
+  if (!img || !img.formats) return undefined;
+  return Object.entries(map)
+    .filter(([, key]) => img.formats[key])
+    .map(([width, key]) => `${STRAPI_URL}${img.formats[key].url} ${width}`)
+    .join(", ");
+}
+
+const srcLogo = size
+  ? STRAPI_URL + image.formats[size].url
+  : STRAPI_URL + image.url;
+const srcLogoDark = size
+  ? STRAPI_URL + imageDark?.formats[size].url
+  : STRAPI_URL + imageDark?.url;
+
+const srcSetLogo = sizeMap ? getSrcSet(image, sizeMap) : undefined;
+const srcSetLogoDark = sizeMap ? getSrcSet(imageDark, sizeMap) : undefined;
+---
+
+<Image
+  inferSize={true}
+  src={srcLogo}
+  srcset={srcSetLogo}
+  alt={alt}
+  class={cn(className, imageDark && "hidden dark:block")}
+  title={alt}
+  {...rest}
+/>
+{
+  imageDark && (
+    <Image
+      inferSize={true}
+      src={srcLogoDark}
+      srcset={srcSetLogoDark}
+      alt={alt}
+      class={cn(className, "dark:hidden")}
+      title={alt}
+      {...rest}
+    />
+  )
+}

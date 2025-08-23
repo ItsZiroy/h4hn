@@ -1,6 +1,7 @@
 ---
 import type { Resume } from "../interfaces/resume";
 import fetchApi from "../lib/strapi";
+import "../styles/fonts.css";
 import "../styles/global.css";
 import "../styles/icons.css";
 
@@ -8,13 +9,25 @@ const resume = await fetchApi<Resume>({
   endpoint: "resume",
   wrappedByKey: "data",
 });
+
+// Get theme from cookie server-side
+const themeCookie = Astro.cookies.get("theme");
+const savedTheme = themeCookie?.value;
+
+// Since we can't detect system preference server-side, we'll default to light
+// and let the client-side JavaScript handle system preference detection
+const isDark = savedTheme === "dark";
+const themeClass = isDark ? "dark" : "";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class={themeClass}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    <meta name="theme-color" content={isDark ? "#282524" : "#FDF9F1"} />
+    <meta name="description" content={resume.about} />
+
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link
       rel="icon"
@@ -36,15 +49,12 @@ const resume = await fetchApi<Resume>({
       crossorigin
     />
     <link rel="dns-prefetch" href="https://analytics.teckdigital.de" />
-    <meta name="theme-color" content="#282524" />
-    <meta name="description" content={resume.about} />
     <title>Yannik Hahn</title>
   </head>
-  <body class="bg-stone-800">
+  <body class="bg-[#FDF9F1] dark:bg-[#000819]">
     <slot />
   </body>
 </html>
-
 <style>
   html,
   body {
@@ -53,7 +63,6 @@ const resume = await fetchApi<Resume>({
     height: 100%;
   }
 </style>
-
 <script
   defer
   data-domain="h4hn.de"

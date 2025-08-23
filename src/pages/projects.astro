@@ -1,10 +1,10 @@
 ---
-import type Project from "../interfaces/project";
-import fetchApi from "../lib/strapi";
-import MainLayout from "../layouts/MainLayout.astro";
-import { Badge } from "../components/ui/badge";
-import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
+import { Badge } from "../components/ui/badge";
+import ThemedImage from "../components/ThemedImage.astro";
+import type Project from "../interfaces/project";
+import MainLayout from "../layouts/MainLayout.astro";
+import fetchApi from "../lib/strapi";
 
 const projects = await fetchApi<Required<Project>[]>({
   endpoint: "projects",
@@ -32,7 +32,9 @@ const projectChunks = chunkProjects(projects);
 ---
 
 <MainLayout>
-  <div class="text-white px-4 md:px-10 max-w-screen-xl mx-auto p-20 pt-10">
+  <div
+    class="text-black dark:text-white px-4 md:px-10 max-w-screen-xl mx-auto p-20 pt-10"
+  >
     <h1 class="text-6xl font-bold mb-10">Projects</h1>
 
     {
@@ -58,7 +60,7 @@ const projectChunks = chunkProjects(projects);
                       }
                     />
                   ) : (
-                    <Image
+                    <ThemedImage
                       width={1200}
                       height={400}
                       layout={
@@ -66,7 +68,7 @@ const projectChunks = chunkProjects(projects);
                           ? "none"
                           : "constrained"
                       }
-                      src={import.meta.env.STRAPI_URL + featured.header.url}
+                      image={featured.header}
                       alt={featured.header.alternativeText || featured.name}
                       class="rounded-2xl w-full h-[200px] md:w-[1200px] md:h-[400px] object-cover mb-4 transition-transform group-hover:scale-[1.01]"
                     />
@@ -84,7 +86,7 @@ const projectChunks = chunkProjects(projects);
                       {featured.icons?.map((icon) => (
                         <Icon
                           name={icon.icon}
-                          class={`text-white text-2xl ml-2`}
+                          class={`text-black dark:text-white text-2xl ml-2`}
                         />
                       ))}
                     </div>
@@ -100,7 +102,7 @@ const projectChunks = chunkProjects(projects);
                   target="_blank"
                   class="block group rounded-2xl hover:scale-[1.01] transition"
                 >
-                  <Image
+                  <ThemedImage
                     width={400}
                     height={200}
                     layout={
@@ -108,8 +110,8 @@ const projectChunks = chunkProjects(projects);
                         ? "none"
                         : "constrained"
                     }
-                    src={import.meta.env.STRAPI_URL + project.header?.url}
-                    alt={project.header?.alternativeText || project.name}
+                    alt={project.name}
+                    image={project.header}
                     class="w-full h-48 object-cover rounded-xl mb-4"
                   />
                   <div class="flex items-start">
@@ -125,7 +127,7 @@ const projectChunks = chunkProjects(projects);
                       {project.icons?.map((icon) => (
                         <Icon
                           name={icon.icon}
-                          class={`text-white text-2xl ml-2`}
+                          class={`text-black dark:text-white text-2xl ml-2`}
                         />
                       ))}
                     </div>

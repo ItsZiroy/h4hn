@@ -1,7 +1,6 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 
-import { Image } from "astro:assets";
 import fetchApi from "../lib/strapi";
 
 import { Icon } from "astro-icon/components";
@@ -11,6 +10,7 @@ import type { Resume } from "../interfaces/resume";
 import type { Summary } from "../interfaces/summary";
 
 import dayjs from "dayjs";
+import ThemedImage from "../components/ThemedImage.astro";
 
 const summary = await fetchApi<Summary>({
   endpoint: "summary",
@@ -43,20 +43,20 @@ const resume = await fetchApi<Resume>({
 ---
 
 <MainLayout>
-  <div class="text-white px-4 md:px-10 py-12 min-h-screen">
+  <div class="text-black dark:text-white px-4 md:px-10 py-12 min-h-screen">
     <div class="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
       <!-- Sidebar -->
       <aside class="md:sticky md:top-32 self-start">
         <div class="rounded-2xl p-6 flex flex-col items-center text-center">
-          <Image
+          <ThemedImage
             height={128}
             width={128}
-            src={import.meta.env.STRAPI_URL + resume.picture.url}
+            image={resume.picture}
             alt="Profile Photo"
-            class="w-32 h-32 rounded-full object-cover border-4 border-white mb-4"
+            class="w-32 h-32 rounded-full object-cover border-4 border-black dark:border-white mb-4"
           />
           <h1 class="text-2xl font-bold">{summary.name}</h1>
-          <p class="text-gray-400">{summary.title}</p>
+          <p class="text-black dark:text-gray-400">{summary.title}</p>
 
           <!-- Social Icons -->
           <div class="flex space-x-1 mt-4">
@@ -66,7 +66,7 @@ const resume = await fetchApi<Resume>({
                   href={social.url}
                   target="_blank"
                   aria-label={social.name}
-                  class="p-2 px-4 rounded-xl hover:bg-stone-700 transition"
+                  class="p-2 px-4 rounded-xl dark:hover:bg-gray-900 hover:bg-neutral-200 transition"
                 >
                   <Icon name={social.icon} class="h-5 w-5" />
                 </a>
@@ -75,11 +75,15 @@ const resume = await fetchApi<Resume>({
           </div>
           <div class="mt-8 space-y-3 w-full text-center text-sm">
             <div>
-              <p class="text-gray-400 uppercase text-xs mb-1">Age</p>
+              <p class="text-black dark:text-gray-400 uppercase text-xs mb-1">
+                Age
+              </p>
               <p class="font-semibold">{resume.age}</p>
             </div>
             <div>
-              <p class="text-gray-400 uppercase text-xs mb-1">Email</p>
+              <p class="text-black dark:text-gray-400 uppercase text-xs mb-1">
+                Email
+              </p>
               <p class="font-semibold">{resume.email}</p>
             </div>
           </div>
@@ -93,7 +97,7 @@ const resume = await fetchApi<Resume>({
           <h2 class="text-xl font-semibold border-b border-[#2e2e45] pb-2 mb-2">
             About Me
           </h2>
-          <p class="text-gray-300">
+          <p class="text-stone-900 dark:text-gray-300">
             {resume.about}
           </p>
         </div>
@@ -111,30 +115,22 @@ const resume = await fetchApi<Resume>({
                   <h3 class="font-bold text-lg">{work.title}</h3>
                   <div class="flex items-center mb-2">
                     <div class="h-14 max-w-28">
-                      <Image
-                        src={
-                          import.meta.env.STRAPI_URL +
-                          work.association.logo.formats.xs.url
-                        }
-                        srcset={
-                          import.meta.env.STRAPI_URL +
-                          work.association.logo.formats.tiny.url +
-                          " 64w, " +
-                          import.meta.env.STRAPI_URL +
-                          work.association.logo.formats.xs.url +
-                          " 256w, " +
-                          import.meta.env.STRAPI_URL +
-                          work.association.logo.formats.small.url +
-                          " 500w"
-                        }
+                      <ThemedImage
+                        image={work.association.logo}
+                        sizeMap={{
+                          "64w": "tiny",
+                          "256w": "xs",
+                          "500w": "small",
+                        }}
                         sizes="(max-width: 768px) 64px, 112px"
+                        size="xs"
                         alt={work.association.name}
                         height={40}
                         width={40}
                         class="h-full object-contain"
                       />
                     </div>
-                    <p class="text-stone-400 text-sm">
+                    <p class="text-stone-700 dark:text-stone-400 text-sm">
                       {work.association.name} —{" "}
                       <span class="text-[#92C8F5]">
                         {dayjs(work.start_date).format("YYYY")} -{" "}
@@ -144,7 +140,7 @@ const resume = await fetchApi<Resume>({
                       </span>
                     </p>
                   </div>
-                  <div class="text-stone-300 mt-1">
+                  <div class="text-stone-900 dark:text-stone-300 mt-1">
                     {work.content && <Markdown content={work.content} />}
                   </div>
                 </div>
@@ -167,34 +163,27 @@ const resume = await fetchApi<Resume>({
                     <h3 class="font-bold text-lg max-w-140">
                       {institute.title}
                     </h3>
-                    <h4 class="text-base text-stone-300 max-w-140">
+                    <h4 class="text-base text-stone-600 dark:text-stone-300 max-w-140">
                       {institute.subtitle}
                     </h4>
                     <div class="flex items-center mb-2">
                       <div class="h-14 max-w-28 mr-2">
-                        <Image
-                          src={
-                            import.meta.env.STRAPI_URL +
-                            institute.association.logo.formats.xs.url
-                          }
-                          srcset={
-                            import.meta.env.STRAPI_URL +
-                            institute.association.logo.formats.tiny.url +
-                            " 64w, " +
-                            import.meta.env.STRAPI_URL +
-                            institute.association.logo.formats.xs.url +
-                            " 256w, " +
-                            import.meta.env.STRAPI_URL +
-                            institute.association.logo.formats.small.url +
-                            " 500w, "
-                          }
+                        <ThemedImage
+                          image={institute.association.logo}
+                          imageDark={institute.association.logo_dark}
+                          size="xs"
+                          sizeMap={{
+                            "64w": "tiny",
+                            "256w": "xs",
+                            "512w": "small",
+                          }}
                           alt={institute.association.name}
                           height={56}
                           width={112}
                           class="h-full object-contain"
                         />
                       </div>
-                      <p class="text-stone-400 text-sm">
+                      <p class="text-stone-700 dark:text-stone-400 text-sm">
                         {institute.association.name} —{" "}
                         <span class="text-[#92C8F5]">
                           {dayjs(institute.end_date).format("YYYY") ===
@@ -204,7 +193,7 @@ const resume = await fetchApi<Resume>({
                         </span>
                       </p>
                     </div>
-                    <div class="text-stone-300 mt-1">
+                    <div class="text-stone-900 dark:text-stone-300 mt-1">
                       {institute.content && (
                         <Markdown content={institute.content} />
                       )}
