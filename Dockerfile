@@ -14,7 +14,7 @@ RUN yarn install --frozen-lockfile
 COPY . .
 RUN yarn build
 # Serve with NGINX
-FROM nginx:1.29-alpine-slim
+FROM itsziroy/nginx-subs-filter:1.29-alpine-slim
 # Copy build output
 COPY --from=builder /app/dist /usr/share/nginx/html
 CMD ["nginx", "-g", "daemon off;"]
