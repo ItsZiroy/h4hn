@@ -27,8 +27,6 @@
 
     const savedTheme = getCookie("theme");
 
-    console.log(savedTheme);
-
     // If no saved theme, use system preference
     if (!savedTheme) {
       const isDarkMode = window.matchMedia(
