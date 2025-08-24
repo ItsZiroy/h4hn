@@ -1,0 +1,318 @@
+---
+import { Icon } from "astro-icon/components";
+import ThemedImage from "../../components/ThemedImage.astro";
+import type { Course } from "../../interfaces/course";
+import type { Summary } from "../../interfaces/summary";
+import fetchApi from "../../lib/strapi";
+import dayjs from "dayjs";
+import Markdown from "../../components/Markdown.astro";
+import MainLayout from "../../layouts/MainLayout.astro";
+import { cn } from "../../lib/utils";
+
+type Props = {
+  course: Course;
+  summary: Summary;
+};
+
+export async function getStaticPaths() {
+  const summary = await fetchApi<Summary>({
+    endpoint: "summary",
+    wrappedByKey: "data",
+  });
+
+  const courses = await fetchApi<Course[]>({
+    endpoint: "courses",
+    wrappedByKey: "data",
+    query: {
+      populate: {
+        header: true,
+        semester: true,
+        links: true,
+        association: { populate: { logo: true, logo_dark: true } },
+        lectures: { populate: { files: true } },
+      },
+    },
+  });
+
+  return courses.map((course) => ({
+    params: { course: course.slug },
+    props: { course, summary },
+  }));
+}
+
+// ---------- shared data loading ----------
+
+async function loadData(slug: string) {
+  const summary = await fetchApi<Summary>({
+    endpoint: "summary",
+    wrappedByKey: "data",
+  });
+
+  const courses = await fetchApi<Course[]>({
+    endpoint: `courses`,
+    wrappedByKey: "data",
+    query: {
+      filters: {
+        slug: {
+          eq: slug,
+        },
+      },
+      populate: {
+        header: true,
+        semester: true,
+        links: true,
+        association: { populate: { logo: true, logo_dark: true } },
+        lectures: { populate: { files: true } },
+      },
+    },
+  });
+
+  return { course: courses?.[0], summary };
+}
+
+// ---------- pick props vs. fetch at runtime ----------
+
+let course: Course;
+let summary: Summary;
+
+if (import.meta.env.STANDALONE !== "true") {
+  // static build → use Astro.props
+  ({ course, summary } = Astro.props);
+} else {
+  // dynamic SSR → fetch per request
+  const { course: slug } = Astro.params;
+  ({ course, summary } = await loadData(slug));
+}
+---
+
+<MainLayout>
+  <div class="w-full grid grid-cols-12 grid-rows-1">
+    <div
+      class="text-black dark:text-white col-span-12 lg:col-start-3 lg:col-end-11 mx-5 lg:mx-0 max-w-screen-xl pt-4"
+    >
+      <a href="/courses">
+        <div
+          class="px-4 py-2 bg-[#92C8F5] dark:bg-gray-700 rounded-lg text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+        >
+          ← Back to all Courses
+        </div>
+      </a>
+
+      <div class="flex flex-col md:flex-row md:items-end mb-10 mt-14">
+        <h1 class="text-6xl font-bold">{course.name}</h1>
+        <h2 class="text-2xl mt-3 md:mt-0 md:ml-auto">{course.semester.name}</h2>
+      </div>
+
+      <div class="w-full flex-col items-center">
+        <ThemedImage
+          width={1200}
+          height={500}
+          image={course.header}
+          alt={course.name}
+          class="rounded-4xl"
+        />
+        <div class="text-right text-sm mt-1">{course.header.caption}</div>
+      </div>
+
+      <div class="mt-4 flex">
+        {
+          course.links.map((link) => (
+            <a
+              href={link.url}
+              target="_blank"
+              class="hover:underline not-first:ml-4"
+            >
+              <div class="flex items-center">
+                <div class="mr-2">{link.description}</div>
+                <Icon name={link.icon} />
+              </div>
+            </a>
+          ))
+        }
+      </div>
+
+      <div class="mt-6">
+        <table
+          class="min-w-full border-gray-300 md:shadow md:dark:shadow-gray-700 rounded-lg"
+        >
+          <thead class="hidden md:table-header-group">
+            <tr class="bg-[#92C8F5] border-none dark:bg-gray-700 text-left">
+              <th class="py-2 px-4 rounded-tl-lg">Date</th>
+              <th class="py-2 px-4">Time</th>
+              <th class="py-2 px-4">Type</th>
+              <th class="py-2 px-4">Topic</th>
+              <th class="py-2 px-4">Description</th>
+              <th class="py-2 px-4 rounded-tr-lg">Files</th>
+            </tr>
+          </thead>
+          <tbody class="rounded-lg">
+            {
+              course.lectures
+                ?.sort((a, b) =>
+                  dayjs(a.start).isBefore(dayjs(b.start)) ? -1 : 1
+                )
+                .map((lecture) => (
+                  <>
+                    {/* Mobile row */}
+                    <tr class="md:hidden">
+                      <td class="pb-4">
+                        <div class="rounded-xl shadow dark:shadow-gray-700">
+                          <div
+                            class={cn(
+                              "font-bold p-2 rounded-t-lg flex justify-between items-center",
+                              lecture.type == "lecture" &&
+                                "bg-[#92C8F5] dark:bg-gray-700",
+                              lecture.type == "exercise" &&
+                                "bg-[#F5A792] dark:bg-gray-700",
+                              ["exam", "presentation"].includes(lecture.type) &&
+                                "bg-[#F5D792] dark:bg-gray-700"
+                            )}
+                          >
+                            <div>
+                              {dayjs(lecture.start).format("dd - DD.MM")}
+                              <span class="ml-4">
+                                {dayjs(lecture.start).format("HH:mm") ===
+                                  "00:00" &&
+                                dayjs(lecture.end).format("HH:mm") === "00:00"
+                                  ? "tbd"
+                                  : `${dayjs(lecture.start).format("HH:mm")} - ${dayjs(lecture.end).format("HH:mm")}`}
+                              </span>
+                            </div>
+                            <div class="capitalize text-sm">{lecture.type}</div>
+                          </div>
+                          <div class="px-2 py-3 rounded-b-lg">
+                            <div class="text-gray-800 font-bold dark:text-gray-200">
+                              {lecture.topic}
+                            </div>
+                            <div class="text-sm pt-3">
+                              {lecture.description ? (
+                                <Markdown content={lecture.description} />
+                              ) : (
+                                "-"
+                              )}
+                            </div>
+                            <div class="text-sm pt-3">
+                              {lecture.files?.length ? (
+                                <ul>
+                                  {lecture.files
+                                    .slice()
+                                    .sort((a, b) =>
+                                      a.name.localeCompare(b.name)
+                                    )
+                                    .map((file) => (
+                                      <li>
+                                        <a
+                                          href={
+                                            import.meta.env.STRAPI_URL +
+                                            file.url
+                                          }
+                                          download
+                                          class="text-[#3e71a4] dark:text-gray-500 underline"
+                                          title={
+                                            file.alternativeText ?? file.name
+                                          }
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          {file.name}
+                                        </a>
+                                      </li>
+                                    ))}
+                                </ul>
+                              ) : null}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    {/* Desktop row */}
+                    <tr class="not-last:border-b last:rounded-b-lg hidden md:table-row">
+                      <td class="py-2 px-4 font-bold">
+                        {dayjs(lecture.start).format("dd - DD.MM")}
+                      </td>
+                      <td class="py-2 px-4">
+                        {dayjs(lecture.start).format("HH:mm") === "00:00" &&
+                        dayjs(lecture.end).format("HH:mm") === "00:00"
+                          ? "tbd"
+                          : `${dayjs(lecture.start).format("HH:mm")} - ${dayjs(lecture.end).format("HH:mm")}`}
+                      </td>
+                      <td class={cn("py-2 px-4 capitalize")}>{lecture.type}</td>
+                      <td class="py-2 px-4">{lecture.topic}</td>
+                      <td class="py-2 px-4">
+                        {lecture.description ? (
+                          <Markdown content={lecture.description} />
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td class="py-2 px-4">
+                        {lecture.files &&
+                        Array.isArray(lecture.files) &&
+                        lecture.files.length > 0 ? (
+                          <ul>
+                            {lecture.files
+                              .slice()
+                              .sort((a, b) => a.name.localeCompare(b.name))
+                              .map((file) => (
+                                <li>
+                                  <a
+                                    href={import.meta.env.STRAPI_URL + file.url}
+                                    download
+                                    class="text-[#3e71a4] dark:text-gray-500 underline"
+                                    title={file.alternativeText ?? file.name}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    {file.name}
+                                  </a>
+                                </li>
+                              ))}
+                          </ul>
+                        ) : (
+                          <span>-</span>
+                        )}
+                      </td>
+                    </tr>
+                  </>
+                ))
+            }
+          </tbody>
+        </table>
+
+        <div class="mt-20 flex flex-col md:flex-row items-center pb-5">
+          <div class="md:w-140">
+            <a href={"/courses/" + course.slug} class="hover:underline"
+              >{course.name}</a
+            >
+            {" "}© 2025 by <a href="https://h4hn.de/">{summary.name}</a> is licensed
+            under
+            <a href="https://creativecommons.org/licenses/by/4.0/">
+              Creative Commons Attribution 4.0 International
+              <div class="inline-flex ml-2">
+                <img
+                  src="https://mirrors.creativecommons.org/presskit/icons/cc.svg"
+                  alt=""
+                  style="max-width: 1em;max-height:1em;margin-left: .2em;"
+                />
+                <img
+                  src="https://mirrors.creativecommons.org/presskit/icons/by.svg"
+                  alt=""
+                  style="max-width: 1em;max-height:1em;margin-left: .2em;"
+                />
+              </div>
+            </a>
+          </div>
+          <div class="h-20 md:ml-auto mt-4 md:mt-0">
+            <ThemedImage
+              inferSize={true}
+              image={course.association.logo}
+              imageDark={course.association.logo_dark}
+              alt={course.association.name}
+              class="h-full w-auto"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</MainLayout>

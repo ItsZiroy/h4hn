@@ -2,7 +2,16 @@
 import { micromark } from "micromark";
 
 const { content } = Astro.props;
-const file = micromark(content);
+import { gfm, gfmHtml } from "micromark-extension-gfm";
+import { processExternalLinks } from "../lib/external-link";
+
+const rawHtml = micromark(content, {
+  extensions: [gfm()],
+  htmlExtensions: [gfmHtml()],
+});
+
+// Post-process the HTML to add external link attributes
+const file = processExternalLinks(rawHtml);
 ---
 
 <div class="md" set:html={String(file)} />
@@ -19,6 +28,15 @@ const file = micromark(content);
     }
     li {
       margin-bottom: 0.3em;
+    }
+    a {
+      color: #1c5e94;
+      text-decoration: underline;
+    }
+    a {
+      &:where(.dark, .dark *) {
+        color: var(--color-gray-400);
+      }
     }
   }
 </style>

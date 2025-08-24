@@ -9,43 +9,176 @@ const { is404 } = Astro.props;
 ---
 
 <Layout>
+  <style>
+    .menu-items {
+      display: none;
+    }
+
+    .menu-open .menu-items {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      padding: 1rem;
+      z-index: 50;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background-color: #fdf9f1;
+    }
+
+    @media (min-width: 768px) {
+      .menu-items {
+        display: flex !important;
+        position: static;
+        flex-direction: row;
+        gap: 2rem;
+        background: transparent;
+        padding: 0;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+      }
+
+      .hamburger {
+        display: none;
+      }
+    }
+  </style>
+
   <nav
-    class="w-full grid grid-cols-12 grid-rows-1 fixed top-0 left-0 z-50 bg-neutral text-black dark:text-white"
+    class="w-full bg-transparent text-black dark:text-white relative z-50"
+    id="main-nav"
   >
-    <div class="col-span-2"></div>
+    <!-- Top nav bar row -->
     <div
-      class="max-w-5xl col-span-8 px-6 py-4 flex justify-center gap-1 md:gap-8"
+      class="flex items-center justify-between px-4 py-4 bg-[#fdf9f1] dark:bg-[#000819] relative"
     >
-      <a href="/resume">
-        <WarpButton
-          warpProps={{ offsetX: -1 }}
-          buttonProps={{ className: "text-xs md:text-base w-10 sm:w-full" }}
-          showWarp={pathname === "/resume"}>Resume</WarpButton
+      <!-- Hamburger (mobile only) -->
+      <div class="w-8 cursor-pointer">
+        <button
+          class="hamburger md:hidden"
+          id="hamburger-btn"
+          aria-label="Toggle Menu"
         >
-      </a>
-      <a href="/">
-        <WarpButton
-          warpProps={{ offsetX: 0 }}
-          buttonProps={{
-            className: "text-sm md:text-lg w-25 sm:w-full",
-          }}
-          showWarp={pathname === "/" || is404}>Yannik Hahn</WarpButton
-        >
-      </a>
-      <a href="/projects">
-        <WarpButton
-          warpProps={{ offsetX: 1 }}
-          buttonProps={{ className: "text-xs md:text-base w-10 sm:w-full" }}
-          showWarp={pathname === "/projects"}>Projects</WarpButton
-        >
-      </a>
-    </div>
-    <div class="col-span-2 flex justify-end mr-3 sm:mr-5">
-      <ThemeToggle />
+          <svg
+            class="w-6 h-6 cursor-pointer"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div
+        class="absolute left-1/2 transform -translate-x-1/2 md:hidden text-center"
+      >
+        <a href="/">
+          <WarpButton
+            warpProps={{ offsetX: 0 }}
+            buttonProps={{ className: "text-sm md:text-lg" }}
+            showWarp={pathname === "/" || is404}
+          >
+            Yannik Hahn
+          </WarpButton>
+        </a>
+      </div>
+
+      <div
+        class="menu-items md:flex md:flex-row md:items-center md:justify-center bg-[#fdf9f1] dark:bg-[#000819]"
+      >
+        <a href="/blog" class="md:w-35">
+          <WarpButton
+            warpProps={{ offsetX: -1 }}
+            buttonProps={{ className: "text-xs md:text-base" }}
+            showWarp={pathname === "/blog"}
+          >
+            Blog
+          </WarpButton>
+        </a>
+
+        <a href="/resume" class="md:w-35">
+          <WarpButton
+            warpProps={{ offsetX: 0.5 }}
+            buttonProps={{ className: "text-xs md:text-base" }}
+            showWarp={pathname === "/resume"}
+          >
+            Resume
+          </WarpButton>
+        </a>
+        <!-- Logo in center of nav (desktop only hidden via CSS, since already in bar) -->
+        <div class="hidden md:block" class="md:w-45">
+          <a href="/">
+            <WarpButton
+              warpProps={{ offsetX: 0 }}
+              buttonProps={{ className: "text-sm md:text-lg" }}
+              showWarp={pathname === "/" || is404}
+            >
+              Yannik Hahn
+            </WarpButton>
+          </a>
+        </div>
+
+        <a href="/projects" class="md:w-35">
+          <WarpButton
+            warpProps={{ offsetX: -0.5 }}
+            buttonProps={{ className: "text-xs md:text-base" }}
+            showWarp={pathname === "/projects"}
+          >
+            Projects
+          </WarpButton>
+        </a>
+
+        <a href="/courses" class="md:w-35">
+          <WarpButton
+            warpProps={{ offsetX: -1 }}
+            buttonProps={{ className: "text-xs md:text-base" }}
+            showWarp={pathname.startsWith("/courses")}
+          >
+            Teaching
+          </WarpButton>
+        </a>
+      </div>
+
+      <!-- Theme toggle (right) -->
+      <div class="flex items-center justify-end gap-2 md:ml-auto">
+        <ThemeToggle />
+      </div>
     </div>
   </nav>
 </Layout>
 
-<main class="relative pt-20">
+<!-- Native JS for toggle -->
+<script>
+  const nav = document.getElementById("main-nav");
+  const toggleBtn = document.getElementById("hamburger-btn");
+
+  toggleBtn.addEventListener("click", () => {
+    nav.classList.toggle("menu-open");
+  });
+
+  // Close menu on link click (mobile only)
+  nav.querySelectorAll(".menu-items a").forEach((link) => {
+    link.addEventListener("click", () => {
+      nav.classList.remove("menu-open");
+    });
+  });
+
+  // Optional: close on outside click
+  document.addEventListener("click", (e) => {
+    if (!nav.contains(e.target) && nav.classList.contains("menu-open")) {
+      nav.classList.remove("menu-open");
+    }
+  });
+</script>
+
+<main class="pt-10">
   <slot />
 </main>
