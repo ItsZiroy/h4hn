@@ -9,44 +9,6 @@ const { is404 } = Astro.props;
 ---
 
 <Layout>
-  <style>
-    .menu-items {
-      display: none;
-    }
-
-    .menu-open .menu-items {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      width: 100%;
-      padding: 1rem;
-      z-index: 50;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      background-color: #fdf9f1;
-    }
-
-    @media (min-width: 768px) {
-      .menu-items {
-        display: flex !important;
-        position: static;
-        flex-direction: row;
-        gap: 2rem;
-        background: transparent;
-        padding: 0;
-        align-items: center;
-        justify-content: center;
-        flex: 1;
-      }
-
-      .hamburger {
-        display: none;
-      }
-    }
-  </style>
-
   <nav
     class="w-full bg-transparent text-black dark:text-white relative z-50"
     id="main-nav"
@@ -92,7 +54,7 @@ const { is404 } = Astro.props;
       </div>
 
       <div
-        class="menu-items md:flex md:flex-row md:items-center md:justify-center bg-[#fdf9f1] dark:bg-[#000819]"
+        class="menu-items md:flex md:flex-row md:items-center md:justify-center"
       >
         <a href="/blog" class="md:w-35">
           <WarpButton
@@ -174,6 +136,13 @@ const { is404 } = Astro.props;
   // Optional: close on outside click
   document.addEventListener("click", (e) => {
     if (!nav.contains(e.target) && nav.classList.contains("menu-open")) {
+      nav.classList.remove("menu-open");
+    }
+  });
+
+  // Close mobile menu if screen size changes to desktop
+  window.addEventListener("resize", () => {
+    if (window.innerWidth >= 768 && nav.classList.contains("menu-open")) {
       nav.classList.remove("menu-open");
     }
   });
