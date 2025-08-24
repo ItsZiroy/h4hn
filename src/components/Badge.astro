@@ -1,0 +1,16 @@
+---
+// Import the utility function
+import { cn } from "../lib/utils";
+const { className, ...props } = Astro.props;
+---
+
+<span
+  data-slot="badge"
+  class={cn(
+    "border-transparent bg-gray-200 text-black dark:text-white dark:bg-gray-800 text-primary-foreground [a&]:hover:bg-primary/90 inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
+    className
+  )}
+  {...props}
+>
+  <slot />
+</span>
