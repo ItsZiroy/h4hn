@@ -1,10 +1,9 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import Badge from "../../components/Badge.astro";
+import ThemedImage from "../../components/ThemedImage.astro";
+import type { Course } from "../../interfaces/course";
 import MainLayout from "../../layouts/MainLayout.astro";
 import fetchApi from "../../lib/strapi";
-import type { Course } from "../../interfaces/course";
-import ThemedImage from "../../components/ThemedImage.astro";
-import Badge from "../../components/Badge.astro";
 
 const courses = await fetchApi<Required<Course>[]>({
   endpoint: "courses",
