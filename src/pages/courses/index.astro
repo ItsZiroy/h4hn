@@ -1,0 +1,81 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import MainLayout from "../../layouts/MainLayout.astro";
+import fetchApi from "../../lib/strapi";
+import type { Course } from "../../interfaces/course";
+import ThemedImage from "../../components/ThemedImage.astro";
+import { Badge } from "../../components/ui/badge";
+
+const courses = await fetchApi<Required<Course>[]>({
+  endpoint: "courses",
+  wrappedByKey: "data",
+  query: {
+    populate: {
+      header: true,
+      semester: true,
+    },
+    sort: "semester.start:desc",
+  },
+});
+---
+
+<MainLayout>
+  <div
+    class="text-black dark:text-white px-4 md:px-10 max-w-screen-xl mx-auto p-20 pt-10"
+  >
+    <h1 class="text-6xl font-bold mb-10">Teaching</h1>
+
+    <div>
+      {
+        courses.map((course) => (
+          <div class="mb-20">
+            <div class="items-center mb-20">
+              <div class="">
+                <a href={`/courses/${course.slug}`} class="block group">
+                  {course.header.mime.startsWith("video") ? (
+                    <video
+                      src={import.meta.env.STRAPI_URL + course.header?.url}
+                      class="rounded-2xl w-full h-[400px] object-cover mb-4 transition-transform group-hover:scale-[1.01]"
+                      autoplay
+                      loop
+                      muted
+                      playsinline
+                      playsinline
+                      poster={
+                        import.meta.env.STRAPI_URL +
+                        course?.header?.formats.small.url
+                      }
+                    />
+                  ) : (
+                    <ThemedImage
+                      width={1200}
+                      height={400}
+                      layout={
+                        course.header.mime.includes("gif")
+                          ? "none"
+                          : "constrained"
+                      }
+                      image={course.header}
+                      alt={course.header.alternativeText || course.name}
+                      class="rounded-2xl w-full h-[200px] md:w-[1200px] md:h-[400px] object-cover mb-4 transition-transform group-hover:scale-[1.01]"
+                    />
+                  )}
+                  <div class="flex items-start">
+                    <div class="flex flex-col">
+                      <h2 class="text-3xl font-semibold group-hover:underline">
+                        {course.name}
+                      </h2>
+                      <div class="flex items-center mt-3">
+                        <Badge>{course.semester.name}</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</MainLayout>

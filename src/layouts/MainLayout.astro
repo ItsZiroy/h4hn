@@ -16,9 +16,17 @@ const { is404 } = Astro.props;
     <div
       class="max-w-5xl col-span-8 px-6 py-4 flex justify-center gap-1 md:gap-8"
     >
+      <a href="/blog">
+        <WarpButton
+          warpProps={{ offsetX: 1 }}
+          buttonProps={{ cclassName: "text-xs md:text-base w-10 sm:w-full" }}
+          showWarp={pathname === "/blog"}
+          client:idle>Blog</WarpButton
+        ></a
+      >
       <a href="/resume">
         <WarpButton
-          warpProps={{ offsetX: -1 }}
+          warpProps={{ offsetX: 0.5 }}
           buttonProps={{ className: "text-xs md:text-base w-10 sm:w-full" }}
           showWarp={pathname === "/resume"}>Resume</WarpButton
         >
@@ -34,9 +42,17 @@ const { is404 } = Astro.props;
       </a>
       <a href="/projects">
         <WarpButton
-          warpProps={{ offsetX: 1 }}
+          warpProps={{ offsetX: -0.5 }}
           buttonProps={{ className: "text-xs md:text-base w-10 sm:w-full" }}
           showWarp={pathname === "/projects"}>Projects</WarpButton
+        >
+      </a>
+      <a href="/courses">
+        <WarpButton
+          warpProps={{ offsetX: -1 }}
+          buttonProps={{ cclassName: "text-xs md:text-base w-10 sm:w-full" }}
+          showWarp={pathname === "/courses"}
+          client:idle>Teaching</WarpButton
         >
       </a>
     </div>
