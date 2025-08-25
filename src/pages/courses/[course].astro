@@ -4,10 +4,24 @@ import ThemedImage from "../../components/ThemedImage.astro";
 import type { Course } from "../../interfaces/course";
 import type { Summary } from "../../interfaces/summary";
 import fetchApi from "../../lib/strapi";
-import dayjs from "dayjs";
+import oldDayjs from "dayjs";
 import Markdown from "../../components/Markdown.astro";
 import MainLayout from "../../layouts/MainLayout.astro";
 import { cn } from "../../lib/utils";
+
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+oldDayjs.extend(timezone);
+oldDayjs.extend(utc);
+
+const dayjs = function (input: string) {
+  if (import.meta.env.STANDALONE == "true") {
+    // server build → use local time
+    return oldDayjs(input);
+  }
+  // static build assume German Time
+  return oldDayjs.utc(input).tz("Europe/Berlin");
+};
 
 type Props = {
   course: Course;
