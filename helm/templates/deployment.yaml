@@ -41,7 +41,7 @@ spec:
           {{- if .Values.image.override}}
           image: "{{.Values.image.override}}"
           {{- else}}
-          image: "{{.Values.image.registry | default "harbor-registry.harbor.svc.cluster.local:5000" }}/kube/{{ .Values.organization }}/{{ .Values.repository }}/{{ .Values.mode }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{.Values.image.registry | default "registry.teckdigital.de" }}/kube/{{ .Values.organization }}/{{ .Values.repository }}/{{ .Values.mode }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           {{- end }}
           {{- if .Values.image.override }}
           {{- end}}
