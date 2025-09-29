@@ -2,11 +2,12 @@
 FROM node:22-alpine AS builder
 ARG SITE_URL
 ENV SITE_URL=${SITE_URL}
+ENV MODE=standalone
 WORKDIR /app
 COPY package*.json ./
 RUN yarn install --frozen-lockfile
 COPY . .
-RUN export $(cat .env.runtime) && yarn build --mode standalone
+RUN export $(cat .env.runtime) && yarn build
 
 # Serve with NGINX
 FROM node:22-alpine
