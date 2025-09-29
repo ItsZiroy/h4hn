@@ -87,8 +87,7 @@ pipeline {
                                     ]) {
                                         buildDockerImage(buildArgs: [
                                             "GITHUB_AUTH_TOKEN=${SERVICE_USER_TOKEN}",
-                                            "SITE_URL=${siteUrl}",
-                                            "STANDALONE=true"
+                                            "SITE_URL=${siteUrl}"
                                         ],
                                         dockerFilePath: "Dockerfile.standalone",
                                         repoSuffix: "/standalone",

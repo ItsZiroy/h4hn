@@ -15,7 +15,7 @@ oldDayjs.extend(timezone);
 oldDayjs.extend(utc);
 
 const dayjs = function (input: string) {
-  if (import.meta.env.STANDALONE == "true") {
+  if (import.meta.env.MODE == "standalone") {
     // server build → use local time
     return oldDayjs(input);
   }
@@ -89,13 +89,13 @@ async function loadData(slug: string) {
 let course: Course;
 let summary: Summary;
 
-if (import.meta.env.STANDALONE !== "true") {
-  // static build → use Astro.props
-  ({ course, summary } = Astro.props);
-} else {
+if (import.meta.env.MODE == "standalone") {
   // dynamic SSR → fetch per request
   const { course: slug } = Astro.params;
   ({ course, summary } = await loadData(slug));
+} else {
+  // static build → use Astro.props
+  ({ course, summary } = Astro.props);
 }
 ---
 

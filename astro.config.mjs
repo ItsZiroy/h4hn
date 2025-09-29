@@ -15,12 +15,13 @@ import sitemap from "@astrojs/sitemap";
 import node from "@astrojs/node";
 
 const { SITE_URL } = loadEnv(process.env.SITE_URL, process.cwd(), "");
-const { STANDALONE } = loadEnv(process.env.STANDALONE, process.cwd(), "");
+const { MODE } = loadEnv(process.env.MODE, process.cwd(), "");
+console.log(MODE);
 
 export default defineConfig({
-  output: STANDALONE == "true" ? "server" : "static",
+  output: MODE == "standalone" ? "server" : "static",
   adapter:
-    STANDALONE == "true"
+    MODE == "standalone"
       ? node({
           mode: "standalone",
         })
