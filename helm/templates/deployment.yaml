@@ -47,6 +47,10 @@ spec:
           {{- end}}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            {{- if .Values.mode }}
+            - name: MODE
+              value: {{ .Values.mode }}
+            {{- end }}
             {{- if .Values.draftMode }}
             - name: DRAFT_MODE
               value: "true"

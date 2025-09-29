@@ -16,7 +16,6 @@ import node from "@astrojs/node";
 
 const { SITE_URL } = loadEnv(process.env.SITE_URL, process.cwd(), "");
 const { MODE } = loadEnv(process.env.MODE, process.cwd(), "");
-console.log(MODE);
 
 export default defineConfig({
   output: MODE == "standalone" ? "server" : "static",
