@@ -80,12 +80,6 @@ const resume = await fetchApi<Resume>({
           <div class="mt-8 space-y-3 w-full text-center text-sm">
             <div>
               <p class="text-black dark:text-gray-400 uppercase text-xs mb-1">
-                Age
-              </p>
-              <p class="font-semibold">{resume.age}</p>
-            </div>
-            <div>
-              <p class="text-black dark:text-gray-400 uppercase text-xs mb-1">
                 Email
               </p>
               <p class="font-semibold">{resume.email}</p>
@@ -118,9 +112,10 @@ const resume = await fetchApi<Resume>({
                 <div>
                   <h3 class="font-bold text-lg">{work.title}</h3>
                   <div class="flex items-center mb-2">
-                    <div class="h-14 max-w-28">
+                    <div class="py-2 mr-2">
                       <ThemedImage
                         image={work.association.logo}
+                        imageDark={work.association.logo_dark}
                         sizeMap={{
                           "64w": "tiny",
                           "256w": "xs",
@@ -129,9 +124,8 @@ const resume = await fetchApi<Resume>({
                         sizes="(max-width: 768px) 64px, 112px"
                         size="xs"
                         alt={work.association.name}
-                        height={40}
-                        width={40}
-                        class="h-full object-contain"
+                        inferSize={true}
+                        class="h-6 max-w-32  w-auto object-contain mt-auto"
                       />
                     </div>
                     <p class="text-stone-700 dark:text-stone-400 text-sm">
