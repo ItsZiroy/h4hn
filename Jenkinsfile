@@ -111,8 +111,8 @@ pipeline {
                                         appName: appName,
                                         valuesPath: valuesPath,
                                         gitOpsRepo: gitOpsRepo,
-                                        credentialsId: "itsziroy-github-user",
-                                        gitUserEmail: "yannik@h4hn.de"
+                                        credentialsId: "h4hn-service-user",
+                                        gitUserEmail: "github-bot@h4hn.de"
                                     )
                                 }
                             }
