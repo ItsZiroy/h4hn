@@ -12,6 +12,7 @@ import { cn } from "../../lib/utils";
 
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import { Schema } from "astro-seo-schema";
 oldDayjs.extend(timezone);
 oldDayjs.extend(utc);
 
@@ -101,7 +102,22 @@ if (import.meta.env.MODE == "standalone") {
 ---
 
 <MainLayout>
+  <Schema
+    item={{
+      "@context": "https://schema.org",
+      "@type": "Course",
+      name: course.name,
+      courseCode: course.name.split(" ")[0],
+      provider: {
+        "@type": "Person",
+        name: summary.name,
+        url: "https://h4hn.de",
+      },
+    }}
+    slot="meta"
+  />
   <SEO title={"Yannik Hahn - " + course.name} slot="meta" />
+
   <div class="w-full grid grid-cols-12 grid-rows-1">
     <div
       class="text-black dark:text-white col-span-12 lg:col-start-3 lg:col-end-11 mx-5 lg:mx-0 max-w-screen-xl pt-4"
