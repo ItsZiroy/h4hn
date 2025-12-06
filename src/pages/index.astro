@@ -1,4 +1,6 @@
 ---
+import { SEO } from "astro-seo";
+import { Schema } from "astro-seo-schema";
 import { Picture } from "astro:assets";
 import ThemedImage from "../components/ThemedImage.astro";
 import type { Summary } from "../interfaces/summary";
@@ -28,6 +30,39 @@ const summary = await fetchApi<Summary>({
 ---
 
 <MainLayout>
+  <Schema
+    item={{
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: summary.name,
+      url: "https://h4hn.de",
+      image: import.meta.env.STRAPI_URL + summary.picture.url,
+      jobTitle: "Master Student in Data Science",
+      sameAs: [
+        "https://linkedin.com/in/yannikhahn/",
+        "https://github.com/ItsZiroy",
+      ],
+    }}
+    slot="meta"
+  />
+
+  <SEO
+    title={summary.name}
+    openGraph={{
+      image: {
+        url: import.meta.env.STRAPI_URL + summary.picture.url,
+        alt: `${summary.name} - Profile Image`,
+      },
+      basic: {
+        url: "https://h4hn.de",
+        type: "website",
+        title: summary.name + " - Personal Website",
+        image: import.meta.env.STRAPI_URL + summary.picture.url,
+      },
+    }}
+    slot="meta"
+  />
+
   <div
     class="mt-38 w-full flex flex-col justify-center items-center z-10 text-black dark:text-white"
   >

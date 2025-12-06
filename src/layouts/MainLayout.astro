@@ -9,6 +9,8 @@ const { is404 } = Astro.props;
 ---
 
 <Layout>
+  <slot name="meta" slot="meta" />
+
   <nav
     class="w-full bg-transparent text-black dark:text-white relative z-50"
     id="main-nav"

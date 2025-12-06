@@ -9,9 +9,12 @@ import Markdown from "../components/Markdown.astro";
 import type { Resume } from "../interfaces/resume";
 import type { Summary } from "../interfaces/summary";
 
+import { Picture } from "astro:assets";
 import dayjs from "dayjs";
 import ThemedImage from "../components/ThemedImage.astro";
-import { Picture } from "astro:assets";
+
+import { SEO } from "astro-seo";
+import { Schema } from "astro-seo-schema";
 
 const summary = await fetchApi<Summary>({
   endpoint: "summary",
@@ -44,6 +47,38 @@ const resume = await fetchApi<Resume>({
 ---
 
 <MainLayout>
+  <Schema
+    item={{
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: summary.name,
+      url: "https://h4hn.de",
+      image: import.meta.env.STRAPI_URL + resume.picture.url,
+      jobTitle: "Master Student in Data Science",
+      sameAs: [
+        "https://linkedin.com/in/yannikhahn/",
+        "https://github.com/ItsZiroy",
+      ],
+    }}
+    slot="meta"
+  />
+
+  <SEO
+    title={summary.name + " - Resume"}
+    openGraph={{
+      image: {
+        url: import.meta.env.STRAPI_URL + resume.picture.url,
+        alt: `${summary.name} - Profile Image`,
+      },
+      basic: {
+        url: "https://h4hn.de",
+        type: "website",
+        title: summary.name + " - Personal Website",
+        image: import.meta.env.STRAPI_URL + resume.picture.url,
+      },
+    }}
+    slot="meta"
+  />
   <div class="text-black dark:text-white px-4 md:px-10 py-12 min-h-screen">
     <div class="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
       <!-- Sidebar -->

@@ -1,4 +1,5 @@
 ---
+import { Schema } from "astro-seo-schema";
 import type { Resume } from "../interfaces/resume";
 import fetchApi from "../lib/strapi";
 import "../styles/fonts.css";
@@ -28,6 +29,8 @@ const themeClass = isDark ? "dark" : undefined;
     <meta name="theme-color" content={isDark ? "#282524" : "#FDF9F1"} />
     <meta name="description" content={resume.about} />
 
+    <slot name="meta" />
+
     <script src="../scripts/apply-theme.ts"></script>
 
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -45,7 +48,6 @@ const themeClass = isDark ? "dark" : undefined;
       href="/favicon/apple-touch-icon.png"
     />
     <link rel="manifest" href="/favicon/site.webmanifest" />
-    <title>Yannik Hahn</title>
   </head>
   <body class="bg-[#FDF9F1] dark:bg-[#000819] relative">
     <slot />
