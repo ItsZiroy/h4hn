@@ -107,16 +107,34 @@ if (import.meta.env.MODE == "standalone") {
       "@context": "https://schema.org",
       "@type": "Course",
       name: course.name,
+      url: import.meta.env.SITE_URL + "/courses/" + course.slug,
       courseCode: course.name.split(" ")[0],
+      description:
+        course.description ?? "A course offered by " + summary.name + ".",
       provider: {
         "@type": "Person",
         name: summary.name,
-        url: "https://h4hn.de",
+        sameAs: import.meta.env.SITE_URL,
       },
     }}
     slot="meta"
   />
-  <SEO title={"Yannik Hahn - " + course.name} slot="meta" />
+  <SEO
+    title={course.name}
+    openGraph={{
+      image: {
+        url: import.meta.env.STRAPI_URL + course.header.url,
+        alt: `${course.name} - Header Image`,
+      },
+      basic: {
+        url: import.meta.env.SITE_URL + "/courses/" + course.slug,
+        type: "website",
+        title: course.name,
+        image: import.meta.env.STRAPI_URL + course.header.url,
+      },
+    }}
+    slot="meta"
+  />
 
   <div class="w-full grid grid-cols-12 grid-rows-1">
     <div
@@ -316,8 +334,8 @@ if (import.meta.env.MODE == "standalone") {
             <a href={"/courses/" + course.slug} class="hover:underline"
               >{course.name}</a
             >
-            {" "}© 2025 by <a href="https://h4hn.de/">{summary.name}</a> is licensed
-            under
+            {" "}© 2025 by <a href={import.meta.env.SITE_URL}>{summary.name}</a> is
+            licensed under
             <a href="https://creativecommons.org/licenses/by/4.0/">
               Creative Commons Attribution 4.0 International
               <div class="inline-flex ml-2">

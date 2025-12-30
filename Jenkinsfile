@@ -38,7 +38,7 @@ pipeline {
                                             "STRAPI_URL=${cmsEndpoint}",
                                             "SITE_URL=${siteUrl}",
                                             "STRAPI_TOKEN=${STRAPI_TOKEN}",
-                                            "DRAFT_MODE=false"
+                                            "DRAFT_MODE=false",
                                         ],
                                         repoSuffix: "/static",
                                         imageTag: "${env.GIT_COMMIT.take(7)}-${env.BUILD_NUMBER}"

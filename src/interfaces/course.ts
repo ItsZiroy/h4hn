@@ -7,6 +7,7 @@ import type { Semester } from "./semester";
 export interface Course {
   id: number;
   name: string;
+  description: string;
   slug: string;
   header: File;
   links: Icon[];

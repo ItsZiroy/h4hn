@@ -35,7 +35,7 @@ const summary = await fetchApi<Summary>({
       "@context": "https://schema.org",
       "@type": "Person",
       name: summary.name,
-      url: "https://h4hn.de",
+      url: import.meta.env.SITE_URL,
       image: import.meta.env.STRAPI_URL + summary.picture.url,
       jobTitle: "Master Student in Data Science",
       sameAs: [
@@ -54,7 +54,7 @@ const summary = await fetchApi<Summary>({
         alt: `${summary.name} - Profile Image`,
       },
       basic: {
-        url: "https://h4hn.de",
+        url: import.meta.env.SITE_URL,
         type: "website",
         title: summary.name + " - Personal Website",
         image: import.meta.env.STRAPI_URL + summary.picture.url,
