@@ -77,11 +77,11 @@ const projectChunks = chunkProjects(projects);
                     />
                   )}
                   <div class="flex items-start">
-                    <div class="flex flex-col">
+                    <div class="flex">
                       <h2 class="text-3xl font-semibold group-hover:underline">
                         {featured.name}
                       </h2>
-                      <div class="flex items-center mt-3">
+                      <div class="mt-auto mb-auto ml-3">
                         <Badge>{featured.year}</Badge>
                       </div>
                     </div>
@@ -95,47 +95,83 @@ const projectChunks = chunkProjects(projects);
                     </div>
                   </div>
                 </a>
+                <div class="mt-2">
+                  {featured?.description &&
+                  featured.description.length > 600 ? (
+                    <>
+                      {featured.description.slice(0, 600)}...{" "}
+                      <a
+                        href={featured.url}
+                        target="_blank"
+                        class="text-blue-500 hover:underline"
+                      >
+                        Read more
+                      </a>
+                    </>
+                  ) : (
+                    featured?.description
+                  )}
+                </div>
               </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
               {rest.map((project) => (
-                <a
-                  href={project.url}
-                  target="_blank"
-                  class="block group rounded-2xl hover:scale-[1.01] transition"
-                >
-                  <ThemedImage
-                    width={400}
-                    height={200}
-                    layout={
-                      project.header.mime.includes("gif")
-                        ? "none"
-                        : "constrained"
-                    }
-                    alt={project.name}
-                    image={project.header}
-                    class="w-full h-48 object-cover rounded-xl mb-4"
-                  />
-                  <div class="flex items-start">
-                    <div class="flex flex-col">
-                      <h3 class="text-3xl font-medium group-hover:underline">
-                        {project.name}
-                      </h3>
-                      <div class="flex items-center mt-1">
-                        <Badge>{project.year}</Badge>
+                <div>
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    class="block group rounded-2xl hover:scale-[1.01] transition"
+                  >
+                    <ThemedImage
+                      width={400}
+                      height={200}
+                      layout={
+                        project.header.mime.includes("gif")
+                          ? "none"
+                          : "constrained"
+                      }
+                      alt={project.name}
+                      image={project.header}
+                      class="w-full h-48 object-cover rounded-xl mb-4"
+                    />
+                    <div class="flex items-start">
+                      <div class="flex flex-col">
+                        <h3 class="text-3xl font-medium group-hover:underline">
+                          {project.name}
+                        </h3>
+                        <div class="flex items-center mt-1">
+                          <Badge>{project.year}</Badge>
+                        </div>
+                      </div>
+                      <div class="flex ml-auto mt-1">
+                        {project.icons?.map((icon) => (
+                          <Icon
+                            name={icon.icon}
+                            class={`text-black dark:text-white text-2xl ml-2`}
+                          />
+                        ))}
                       </div>
                     </div>
-                    <div class="flex ml-auto mt-1">
-                      {project.icons?.map((icon) => (
-                        <Icon
-                          name={icon.icon}
-                          class={`text-black dark:text-white text-2xl ml-2`}
-                        />
-                      ))}
-                    </div>
+                  </a>
+                  <div class="mt-2">
+                    {project?.description &&
+                    project.description.length > 600 ? (
+                      <>
+                        {project.description.slice(0, 600)}...{" "}
+                        <a
+                          href={project.url}
+                          target="_blank"
+                          class="text-blue-500 hover:underline"
+                        >
+                          Read more
+                        </a>
+                      </>
+                    ) : (
+                      project?.description
+                    )}
                   </div>
-                </a>
+                </div>
               ))}
             </div>
           </div>

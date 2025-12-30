@@ -5,6 +5,7 @@ export default interface Project {
   id: number;
 
   name: string;
+  description?: string;
   url: string;
   slug: string;
   icons: Icon[];
