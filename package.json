@@ -5,10 +5,13 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "preview": "yarn run build && wrangler dev",
+    "astro": "astro",
+    "deploy": "yarn run build && wrangler deploy",
+    "cf-typegen": "wrangler types"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "12",
     "@astrojs/node": "^9.4.2",
     "@astrojs/react": "^4.3.0",
     "@astrojs/sitemap": "^3.4.1",
@@ -48,7 +51,8 @@
     "unified": "^11.0.5"
   },
   "devDependencies": {
-    "tw-animate-css": "^1.3.5"
+    "tw-animate-css": "^1.3.5",
+    "wrangler": "^4.95.0"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
