@@ -156,9 +156,9 @@ const projectChunks = chunkProjects(projects);
                   </a>
                   <div class="mt-2">
                     {project?.description &&
-                    project.description.length > 600 ? (
+                    project.description.length > 400 ? (
                       <>
-                        {project.description.slice(0, 600)}...{" "}
+                        {project.description.slice(0, 400)}...{" "}
                         <a
                           href={project.url}
                           target="_blank"
