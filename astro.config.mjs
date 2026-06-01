@@ -14,17 +14,14 @@ import { loadEnv } from "vite";
 import sitemap from "@astrojs/sitemap";
 import node from "@astrojs/node";
 
+import cloudflare from "@astrojs/cloudflare";
+
 const { SITE_URL } = loadEnv(process.env.SITE_URL, process.cwd(), "");
 const { MODE } = loadEnv(process.env.MODE, process.cwd(), "");
 
 export default defineConfig({
   output: MODE == "standalone" ? "server" : "static",
-  adapter:
-    MODE == "standalone"
-      ? node({
-          mode: "standalone",
-        })
-      : undefined,
+  adapter: cloudflare(),
   site: SITE_URL,
   trailingSlash: "never",
   prefetch: {
