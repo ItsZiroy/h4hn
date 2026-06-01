@@ -21,7 +21,7 @@ const { MODE } = loadEnv(process.env.MODE, process.cwd(), "");
 
 export default defineConfig({
   output: MODE == "standalone" ? "server" : "static",
-  adapter: MODE == "standalone" ? cloudflare() : node({ mode: "standalone" }),
+  adapter: MODE == "standalone" ? node({ mode: "standalone" }) : cloudflare(),
   site: SITE_URL,
   trailingSlash: "never",
   prefetch: {
