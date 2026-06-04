@@ -24,6 +24,9 @@ export default defineConfig({
   adapter: MODE == "standalone" ? node({ mode: "standalone" }) : cloudflare(),
   site: SITE_URL,
   trailingSlash: "never",
+  build: {
+    format: "file", // Generates 'about.html' instead of 'about/index.html'
+  },
   prefetch: {
     prefetchAll: true,
     defaultStrategy: "hover",
