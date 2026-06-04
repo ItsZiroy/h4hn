@@ -62,7 +62,7 @@ const { is404 } = Astro.props;
           <WarpButton
             warpProps={{ offsetX: -1 }}
             buttonProps={{ className: "text-xs md:text-base" }}
-            showWarp={pathname === "/blog"}
+            showWarp={pathname.startsWith("/blog")}
           >
             Blog
           </WarpButton>

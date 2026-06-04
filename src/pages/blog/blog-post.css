@@ -1,0 +1,80 @@
+@reference "tailwindcss";
+
+@layer components {
+  .blog-post {
+    @apply !max-w-5xl mx-auto px-4 py-8;
+    counter-reset: page-count; /* Initializes the counter at 0 */
+  }
+
+  .blog-post img {
+    display: block;
+    break-inside: avoid;
+    max-width: 100%;
+    height: auto;
+    @apply mx-auto rounded-lg shadow-md;
+  }
+
+  .blog-post p:first-of-type {
+    margin-top: 0 !important;
+  }
+
+  /* Target our automatically injected divs */
+  .blog-content .page-break {
+    break-inside: avoid;
+    column-span: all; /* Spans across both columns */
+    display: block;
+    margin: 4rem 0;
+    text-align: center;
+    counter-increment: page-count; /* Adds 1 to the counter */
+  }
+
+  /* The subtle gradient divider line */
+  .blog-content .page-break::before {
+    content: "";
+    display: block;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      currentColor 50%,
+      transparent 100%
+    );
+    opacity: 0.15;
+    margin-bottom: 1.5rem;
+  }
+
+  .blog-content {
+    column-fill: auto;
+  }
+
+  /* The printed page indicator */
+  .blog-content .page-break::after {
+    content: "— Page " counter(page-count) " —";
+    display: block;
+    font-size: 0.875rem;
+    opacity: 0.4;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .blog-post pre {
+    column-span: all;
+    break-inside: avoid; /* Prevents the code block itself from awkwardly splitting */
+    @apply my-8 w-full;
+  }
+
+  .blog-post :is(h2, h3, h4, h5, h6) {
+    margin-top: 0 !important;
+  }
+
+  /* Drop cap - first letter of first paragraph */
+  .blog-post
+    > #paginated-container
+    > div:first-child
+    > p:first-of-type::first-letter {
+    @apply float-left text-8xl font-bold leading-none pr-2 mr-1 -mt-2 -mb-2;
+  }
+
+  .blog-post p {
+    min-height: 0.1px;
+  }
+}

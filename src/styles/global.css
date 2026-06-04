@@ -1,12 +1,19 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@plugin "@tailwindcss/typography";
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @view-transition {
   navigation: auto;
 }
 
+@layer prose {
+  .prose  {
+    @apply text-black dark:text-white;
+  }
+}
 @layer base {
   html {
     font-family: "Playfair Display", serif;

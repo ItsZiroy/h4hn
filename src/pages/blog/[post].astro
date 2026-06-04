@@ -1,0 +1,219 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import type { Post } from "../../interfaces/post";
+
+import { SEO } from "astro-seo";
+import fetchApi from "../../lib/strapi";
+import "./blog-post.css";
+import "katex/dist/katex.min.css";
+import ThemedImage from "../../components/ThemedImage.astro";
+
+type Props = {
+  post: Post;
+  summary: Summary;
+};
+let post: Post;
+let summary: Summary;
+
+export async function getStaticPaths() {
+  const posts = await fetchApi<Post[]>({
+    endpoint: "posts",
+    wrappedByKey: "data",
+    query: {
+      populate: {
+        header: true,
+      },
+    },
+  });
+  const summary = await fetchApi<Summary>({
+    endpoint: "summary",
+    wrappedByKey: "data",
+    query: {
+      populate: {
+        picture: true,
+      }
+    }
+  });
+
+  return posts.map((post) => ({
+    params: { post: post.slug },
+    props: { post, summary },
+  }));
+}
+
+async function loadData(slug: string) {
+  const posts = await fetchApi<Post[]>({
+    endpoint: `posts`,
+    wrappedByKey: "data",
+    query: {
+      filters: {
+        slug: {
+          eq: slug,
+        },
+      },
+      populate: {
+        header: true,
+      },
+    },
+  });
+
+  const summary = await fetchApi<Summary>({
+    endpoint: "summary",
+    wrappedByKey: "data",
+    query: {
+      populate: {
+        picture: true,
+      }
+    }
+  });
+
+  return { post: posts?.[0], summary };
+}
+
+if (import.meta.env.MODE == "standalone") {
+  const { post: slug } = Astro.params;
+  ({ post, summary } = await loadData(slug));
+} else {
+  ({ post, summary } = Astro.props);
+}
+
+// Split by closing paragraph tags, chunk them, and inject our break div
+const paragraphsPerBreak = 4; // Change this to whatever number feels right
+const paragraphRegex = /(<\/p>)/g;
+let count = 0;
+
+// Automatically inject a page break after every X paragraphs
+const automatedHtmlContent = post.htmlContent.replace(paragraphRegex, (match) => {
+  count++;
+  if (count % paragraphsPerBreak === 0) {
+    return `${match}<div class="page-break"></div>`;
+  }
+  return match;
+});
+---
+
+<MainLayout>
+  <SEO
+    title={post.title}
+    openGraph={{
+      image: {
+        url: import.meta.env.STRAPI_URL + post.header.url,
+        alt: `${post.title} - Header Image`,
+      },
+      basic: {
+        url: import.meta.env.SITE_URL + "/blog/" + post.slug,
+        type: "website",
+        title: post.title,
+        image: import.meta.env.STRAPI_URL + post.header.url,
+      },
+    }}
+    slot="meta"
+  />
+
+  <div class="px-4 max-w-5xl mx-auto">
+    <ThemedImage
+        inferSize={true}
+        image={post.header}
+        alt={`${post.title} header image`}
+        class="col-span-full  w-full max-h-[450px] object-cover rounded-2xl"
+        />
+  </div>
+
+  <div class="text-center flex flex-col items-center">
+    <h1 class="text-5xl mt-10">{post.title}</h1>
+
+    <h3 class="text-lg mt-4">A story about double column layout on websites</h3>
+
+    <div class="flex mt-1 items-center">
+        <ThemedImage width={25} height={25} image={summary.picture} alt={`Yannik's profile picture`} class="rounded-full mr-2" />
+        <h4 class="ml-1 tracking-widest">YANNIK HAHN</h4>
+    </div>
+  </div>
+
+  <div class="blog-post prose">
+    <div id="raw-content" class="hidden" set:html={post.htmlContent} />
+
+    <div id="paginated-container"></div>
+  </div>
+
+  <script>
+    function paginateByHeight() {
+      const rawContent = document.getElementById('raw-content');
+      const container = document.getElementById('paginated-container');
+      if (!rawContent || !container) return;
+
+      // Target height for each page chunk (e.g., 900px)
+      const TARGET_PAGE_HEIGHT = 1400;
+      let pageCounter = 1;
+
+      // Create the very first page container
+      let currentPage = createPageElement(pageCounter);
+      container.appendChild(currentPage);
+
+      // Clone child nodes from raw content to safely measure them
+      const children = Array.from(rawContent.childNodes);
+
+      children.forEach((node) => {
+        const clone = node.cloneNode(true);
+        currentPage.appendChild(clone);
+
+        // Check if adding this node caused the current page to overflow our target height
+        if (currentPage.offsetHeight > TARGET_PAGE_HEIGHT) {
+          // If it overflowed, remove it from this page...
+          currentPage.removeChild(clone);
+
+          // ...increment our page count and create a divider line...
+          const divider = document.createElement('div');
+          divider.className = 'page-break-divider';
+          divider.innerHTML = `<span>— Page ${pageCounter} —</span>`;
+          container.appendChild(divider);
+
+          // ...and spin up a brand new page container for the next batch of elements
+          pageCounter++;
+          currentPage = createPageElement(pageCounter);
+          container.appendChild(currentPage);
+
+          // Put the element that caused the overflow into the new page
+          currentPage.appendChild(clone);
+        }
+      });
+    }
+
+    function createPageElement(pageNum: number) {
+      const div = document.createElement('div');
+      // Re-apply your custom newspaper columns class to each physical page container
+      div.className = 'blog-page-chunk columns-2 gap-8 mb-8';
+      div.style.columnFill = 'auto';
+      return div;
+    }
+
+    // Run the pagination script once the content and fonts are fully loaded
+    window.addEventListener('load', paginateByHeight);
+  </script>
+
+  <style is:global>
+    /* Styling for the dynamically injected page breaks */
+    .page-break-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 4rem 0;
+      width: 100%;
+    }
+    .page-break-divider::before {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent 0%, currentColor 50%, transparent 100%);
+      opacity: 0.2;
+      margin-bottom: 1.5rem;
+    }
+    .page-break-divider span {
+      font-size: 0.875rem;
+      opacity: 0.4;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+  </style>
+</MainLayout>
