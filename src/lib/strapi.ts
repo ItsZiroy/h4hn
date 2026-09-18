@@ -41,7 +41,6 @@ export default async function fetchApi<T>({
       url += `?status=draft`;
     }
   }
-
   const res = await fetch(url, {
     headers: {
       Authorization: `Bearer ${import.meta.env.STRAPI_TOKEN}`,

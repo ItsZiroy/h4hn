@@ -13,6 +13,12 @@ const courses = await fetchApi<Required<Course>[]>({
     populate: {
       header: true,
       semester: true,
+      association: {
+        populate: {
+          logo: true,
+          logo_dark: true,
+        },
+      },
     },
     sort: "semester.start:desc",
   },
@@ -26,7 +32,7 @@ const courses = await fetchApi<Required<Course>[]>({
   >
     <h1 class="text-6xl font-bold mb-10">Teaching</h1>
 
-    <div>
+    <div class="md:flex md:gap-8">
       {
         courses.map((course) => (
           <div class="mb-20">
@@ -62,10 +68,29 @@ const courses = await fetchApi<Required<Course>[]>({
                     />
                   )}
                   <div class="flex items-start">
-                    <div class="flex flex-col">
-                      <h2 class="text-3xl font-semibold group-hover:underline">
-                        {course.name}
-                      </h2>
+                    <div class="flex flex-col w-full">
+                      <div class="flex justify-between w-full">
+                        <h2 class="text-3xl font-semibold group-hover:underline">
+                          {course.name}
+                        </h2>
+                        <ThemedImage
+                          inferSize={true}
+                          sizeMap={{
+                            "64w": "xs",
+                            "256w": "small",
+                            "500w": "medium",
+                          }}
+                          sizes="(max-width: 768px) 64px, 112px"
+                          size="small"
+                          image={course.association.logo}
+                          imageDark={course.association.logo_dark}
+                          alt={
+                            course.association.logo.alternativeText ||
+                            course.association.name
+                          }
+                          class="h-8 max-w-64  w-auto object-contain mt-auto"
+                        />
+                      </div>
                       <div class="flex items-center mt-3">
                         <Badge>{course.semester.name}</Badge>
                       </div>

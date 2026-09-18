@@ -16,7 +16,7 @@ import { Schema } from "astro-seo-schema";
 oldDayjs.extend(timezone);
 oldDayjs.extend(utc);
 
-const dayjs = function (input: string) {
+const dayjs = function (input?: string) {
   if (import.meta.env.MODE == "standalone") {
     // server build → use local time
     return oldDayjs(input);
@@ -70,7 +70,7 @@ async function loadData(slug: string) {
     query: {
       filters: {
         slug: {
-          eq: slug,
+          $eq: slug,
         },
       },
       populate: {
@@ -82,7 +82,6 @@ async function loadData(slug: string) {
       },
     },
   });
-
   return { course: courses?.[0], summary };
 }
 
@@ -94,6 +93,7 @@ let summary: Summary;
 if (import.meta.env.MODE == "standalone") {
   // dynamic SSR → fetch per request
   const { course: slug } = Astro.params;
+  console.log(slug);
   ({ course, summary } = await loadData(slug));
 } else {
   // static build → use Astro.props
@@ -331,8 +331,9 @@ if (import.meta.env.MODE == "standalone") {
             <a href={"/courses/" + course.slug} class="hover:underline"
               >{course.name}</a
             >
-            {" "}© 2025 by <a href={import.meta.env.SITE_URL}>{summary.name}</a> is
-            licensed under
+            {" "}© {dayjs().year()} by <a href={import.meta.env.SITE_URL}
+              >{summary.name}</a
+            > is licensed under
             <a href="https://creativecommons.org/licenses/by/4.0/">
               Creative Commons Attribution 4.0 International
               <div class="inline-flex ml-2">
