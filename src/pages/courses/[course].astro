@@ -191,7 +191,6 @@ if (import.meta.env.MODE == "standalone") {
               <th class="py-2 px-4">Time</th>
               <th class="py-2 px-4">Type</th>
               <th class="py-2 px-4">Topic</th>
-              <th class="py-2 px-4">Description</th>
               <th class="py-2 px-4 rounded-tr-lg">Files</th>
             </tr>
           </thead>
@@ -199,7 +198,7 @@ if (import.meta.env.MODE == "standalone") {
             {
               course.lectures
                 ?.sort((a, b) =>
-                  dayjs(a.start).isBefore(dayjs(b.start)) ? -1 : 1
+                  dayjs(a.start).isBefore(dayjs(b.start)) ? -1 : 1,
                 )
                 .map((lecture) => (
                   <>
@@ -215,7 +214,7 @@ if (import.meta.env.MODE == "standalone") {
                               lecture.type == "exercise" &&
                                 "bg-[#F5A792] dark:bg-gray-700",
                               ["exam", "presentation"].includes(lecture.type) &&
-                                "bg-[#F5D792] dark:bg-gray-700"
+                                "bg-[#F5D792] dark:bg-gray-700",
                             )}
                           >
                             <div>
@@ -247,7 +246,7 @@ if (import.meta.env.MODE == "standalone") {
                                   {lecture.files
                                     .slice()
                                     .sort((a, b) =>
-                                      a.name.localeCompare(b.name)
+                                      a.name.localeCompare(b.name),
                                     )
                                     .map((file) => (
                                       <li>
@@ -276,7 +275,12 @@ if (import.meta.env.MODE == "standalone") {
                       </td>
                     </tr>
                     {/* Desktop row */}
-                    <tr class="not-last:border-b last:rounded-b-lg hidden md:table-row">
+                    <tr
+                      class={cn(
+                        "not-last:border-b last:rounded-b-lg hidden md:table-row",
+                        lecture.type == "exercise" ? "bg-sky-50" : "",
+                      )}
+                    >
                       <td class="py-2 px-4 font-bold">
                         {dayjs(lecture.start).format("dd - DD.MM")}
                       </td>
@@ -288,13 +292,6 @@ if (import.meta.env.MODE == "standalone") {
                       </td>
                       <td class={cn("py-2 px-4 capitalize")}>{lecture.type}</td>
                       <td class="py-2 px-4">{lecture.topic}</td>
-                      <td class="py-2 px-4">
-                        {lecture.description ? (
-                          <Markdown content={lecture.description} />
-                        ) : (
-                          "-"
-                        )}
-                      </td>
                       <td class="py-2 px-4">
                         {lecture.files &&
                         Array.isArray(lecture.files) &&
